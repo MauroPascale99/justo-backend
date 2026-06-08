@@ -354,6 +354,42 @@ def guardar_batch(productos: list[dict], retailer: str,
         conn.close()
         return 0, 0, 0
 
+    # Camino rapido (modo --solo-catalogo): upsert masivo en lote. Evita el viaje
+    # de red fila-por-fila (servidor en Sao Paulo, base en US-East) que hacia la
+    # corrida lentisima. Como no guardamos precios, no necesitamos el id por fila.
+    if not GUARDAR_CAPTURAS:
+        from psycopg2.extras import execute_values
+        dedup = {}
+        for prod in productos:
+            if not prod["nombre_original"]:
+                continue
+            url = prod["url_producto"] or f"sin-url-{prod['id_externo']}"
+            dedup[url] = (
+                id_fuente, prod["retailer"], prod["nombre_original"], url,
+                prod["url_imagen"], prod["categoria_original"],
+                prod["ean_detectado"] or None, prod["marca_original"] or None,
+            )
+        rows = list(dedup.values())
+        if rows:
+            execute_values(cur, """
+                INSERT INTO productos_fuente
+                    (id_fuente, retailer, nombre_original, url_producto, url_imagen,
+                     categoria_original, ean_detectado, marca_original)
+                VALUES %s
+                ON CONFLICT (id_fuente, url_producto) DO UPDATE SET
+                    nombre_original    = EXCLUDED.nombre_original,
+                    url_imagen         = EXCLUDED.url_imagen,
+                    categoria_original = EXCLUDED.categoria_original,
+                    ean_detectado      = COALESCE(EXCLUDED.ean_detectado, productos_fuente.ean_detectado),
+                    marca_original     = COALESCE(EXCLUDED.marca_original, productos_fuente.marca_original),
+                    ultima_vez_visto   = now()
+            """, rows, page_size=500)
+            conn.commit()
+        cur.execute("UPDATE fuentes SET ultima_captura = now() WHERE retailer = %s", (retailer,))
+        conn.commit()
+        conn.close()
+        return 0, len(rows), 0
+
     insertados  = 0
     actualizados = 0
     capturas    = 0
