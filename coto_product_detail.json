@@ -1,0 +1,367 @@
+{
+  "contents": [
+    {
+      "ProductDescriptionN": [
+        {
+          "displayNamePropertyAlias": "displayName",
+          "@type": "Neticel_ProductDisplayName",
+          "name": "Neticel Product DisplayName",
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/Web/product page/product landing page",
+            "ecr:innerPath": "ProductDescriptionN[0]"
+          }
+        },
+        {
+          "@type": "Neticel_ProductBrand",
+          "name": "Neticel Product Marca",
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/Web/product page/product landing page",
+            "ecr:innerPath": "ProductDescriptionN[1]"
+          }
+        },
+        {
+          "displayNamePropertyAlias": "displayName",
+          "@type": "Neticel_ProductPrice",
+          "name": "Neticel Product Precio",
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/Web/product page/product landing page",
+            "ecr:innerPath": "ProductDescriptionN[2]"
+          }
+        },
+        {
+          "displayNamePropertyAlias": "displayName",
+          "@type": "Neticel_ProductSucursales",
+          "name": "Neticel Product Sucursales",
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/Web/product page/product landing page",
+            "ecr:innerPath": "ProductDescriptionN[3]"
+          }
+        },
+        {
+          "displayNamePropertyAlias": "displayName",
+          "@type": "Neticel_ProductComprar",
+          "name": "Neticel Product Comprar",
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/Web/product page/product landing page",
+            "ecr:innerPath": "ProductDescriptionN[4]"
+          }
+        },
+        {
+          "listas": true,
+          "@type": "Neticel_ProductListasYComparar",
+          "comparador": true,
+          "name": "Neticel Product Comparador y Listas",
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/Web/product page/product landing page",
+            "ecr:innerPath": "ProductDescriptionN[5]"
+          },
+          "favoritos": false
+        },
+        {
+          "@type": "Neticel_ProductInstrucciones",
+          "name": "Neticel Product Instrucciones de envio",
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/Web/product page/product landing page",
+            "ecr:innerPath": "ProductDescriptionN[6]"
+          }
+        },
+        {
+          "content": "<script>\nvar contentId='default';\n$( document ).ready(function() {\n$(\".dataType\").each(function(){if($(this).text().match('^Definici')) $(this).text('Definición');})\n});\n</script>\n<style type=\"text/css\">#wc-power-page{margin:40px 0;}\n</style>\n<style type=\"text/css\">.atg_store_productSingleSkuWide .product_discount_card img {\n    width: 30px;\n    height: auto;\n    margin: 0px 5px;\n}\n\n\n.atg_store_productSingleSkuWide .pop-financiacion-only{\n margin: 15px 0 0 0 !important;\n width: 100%;\n text-align: center;\n}\n\n#atg_store_recentlyViewedProducts .pop-financiacion-only{\ndisplay: none !important;\n}\n#productInfoContainer .product_discount_pay {\nheight: auto;\n}\n</style>",
+          "image_src": "",
+          "@type": "Neticel_ProductHtml",
+          "name": "Contenido HTML",
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/Web/product page/product landing page",
+            "ecr:innerPath": "ProductDescriptionN[7]"
+          }
+        }
+      ],
+      "ProductDetailN": [
+        {
+          "templateTypes": [
+            "SecondaryContent"
+          ],
+          "@type": "COTO-ContentSlot-Secondary",
+          "name": "Contenido Dinamico",
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/Web/product page/product landing page",
+            "ecr:innerPath": "ProductDetailN[0]"
+          },
+          "contentPaths": [
+            "/content/Shared/DynamicContent"
+          ],
+          "ruleLimit": "500",
+          "templateIds": []
+        },
+        {
+          "displayNamePropertyAlias": "ProductDetail",
+          "@type": "Neticel_ProductDetail",
+          "name": "Neticel Product Detail",
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/Web/product page/product landing page",
+            "ecr:innerPath": "ProductDetailN[1]"
+          }
+        },
+        {
+          "@type": "Neticel_ProductCrossSell",
+          "cantidad": "12",
+          "name": "Productos Cross Selling",
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/Web/product page/product landing page",
+            "ecr:innerPath": "ProductDetailN[2]"
+          },
+          "HtmlContent": [
+            {
+              "content": "<h3>Tambi&eacute;n te recomendamos</h3>",
+              "image_src": "",
+              "@type": "Neticel_ProductHtml",
+              "name": "Contenido HTML",
+              "endeca:auditInfo": {
+                "ecr:resourcePath": "content/Web/product page/product landing page",
+                "ecr:innerPath": "ProductDetailN[2]/HtmlContent[0]"
+              }
+            }
+          ],
+          "carroucel": false
+        },
+        {
+          "@type": "Neticel_ProductosVistosRecientemente",
+          "cantidad": "12",
+          "name": "Productos Vistos Recientemente",
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/Web/product page/product landing page",
+            "ecr:innerPath": "ProductDetailN[3]"
+          },
+          "HtmlContent": [
+            {
+              "content": "<h3>&Uacute;ltimos consultados</h3>",
+              "image_src": "",
+              "@type": "Neticel_ProductHtml",
+              "name": "Contenido HTML",
+              "endeca:auditInfo": {
+                "ecr:resourcePath": "content/Web/product page/product landing page",
+                "ecr:innerPath": "ProductDetailN[3]/HtmlContent[0]"
+              }
+            }
+          ],
+          "carroucel": false
+        }
+      ],
+      "ProductGarantiaExtendidaN": [],
+      "ProductCompraProtegidaN": [],
+      "@type": "Neticel_ProductLandingPage",
+      "fieldNames": [
+        "parentCategory.displayName",
+        "product.displayName",
+        "product.language",
+        "product.longDescription",
+        "product.nonreturnable",
+        "product.repositoryId",
+        "product.siteId",
+        "sku.activePrice",
+        "sku.displayName",
+        "sku.onSale",
+        "sku.repositoryId"
+      ],
+      "ProductBreadCrumbsN": [
+        {
+          "removeAllAction": {
+            "contentPath": "/producto",
+            "@class": "com.endeca.infront.cartridge.model.NavigationAction",
+            "label": null,
+            "navigationState": "?format=json",
+            "siteRootPath": "/pages",
+            "siteState": {
+              "@class": "com.endeca.infront.site.model.SiteState",
+              "contentPath": "/producto/jabón-líquido-matic-fragancia-limón-granby-3l",
+              "matchedUrlPattern": null,
+              "properties": {},
+              "siteDefinition": {
+                "@class": "com.endeca.infront.site.model.SiteDefinition",
+                "displayName": "Coto Digital (Integral)",
+                "filterStateConfiguration": null,
+                "id": "/cdigi",
+                "patterns": [
+                  "/cdigi"
+                ],
+                "urlPattern": "/cdigi"
+              },
+              "siteId": "/cdigi",
+              "validSite": true
+            }
+          },
+          "displayNamePropertyAlias": "displayName",
+          "refinementCrumbs": [],
+          "geoFilterCrumb": null,
+          "@type": "Neticel_ProductBreadCrumbs",
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/Web/product page/product landing page",
+            "ecr:innerPath": "ProductBreadCrumbsN[0]"
+          },
+          "name": "Neticel Product Breadcrumbs",
+          "searchCrumbs": [],
+          "rangeFilterCrumbs": [
+            {
+              "propertyName": "product.endDate",
+              "lowerBound": "1.7799264E12",
+              "@class": "com.endeca.infront.cartridge.model.RangeFilterBreadcrumb",
+              "label": null,
+              "operation": "GTEQ",
+              "name": "product.endDate",
+              "upperBound": "0.0",
+              "removeAction": {
+                "contentPath": "/producto",
+                "@class": "com.endeca.infront.cartridge.model.NavigationAction",
+                "label": null,
+                "navigationState": "?Nf=product.startDate%7CLTEQ+1.7799264E12&Nr=AND%28product.sDisp_200%3A1004%2Cproduct.language%3Aespa%C3%B1ol%2COR%28product.siteId%3ACotoDigital%29%29&format=json",
+                "siteRootPath": "/pages",
+                "siteState": {
+                  "@class": "com.endeca.infront.site.model.SiteState",
+                  "contentPath": "/producto/jabón-líquido-matic-fragancia-limón-granby-3l",
+                  "matchedUrlPattern": null,
+                  "properties": {},
+                  "siteDefinition": {
+                    "@class": "com.endeca.infront.site.model.SiteDefinition",
+                    "displayName": "Coto Digital (Integral)",
+                    "filterStateConfiguration": null,
+                    "id": "/cdigi",
+                    "patterns": [
+                      "/cdigi"
+                    ],
+                    "urlPattern": "/cdigi"
+                  },
+                  "siteId": "/cdigi",
+                  "validSite": true
+                }
+              }
+            },
+            {
+              "propertyName": "product.startDate",
+              "lowerBound": "1.7799264E12",
+              "@class": "com.endeca.infront.cartridge.model.RangeFilterBreadcrumb",
+              "label": null,
+              "operation": "LTEQ",
+              "name": "product.startDate",
+              "upperBound": "0.0",
+              "removeAction": {
+                "contentPath": "/producto",
+                "@class": "com.endeca.infront.cartridge.model.NavigationAction",
+                "label": null,
+                "navigationState": "?Nf=product.endDate%7CGTEQ+1.7799264E12&Nr=AND%28product.sDisp_200%3A1004%2Cproduct.language%3Aespa%C3%B1ol%2COR%28product.siteId%3ACotoDigital%29%29&format=json",
+                "siteRootPath": "/pages",
+                "siteState": {
+                  "@class": "com.endeca.infront.site.model.SiteState",
+                  "contentPath": "/producto/jabón-líquido-matic-fragancia-limón-granby-3l",
+                  "matchedUrlPattern": null,
+                  "properties": {},
+                  "siteDefinition": {
+                    "@class": "com.endeca.infront.site.model.SiteDefinition",
+                    "displayName": "Coto Digital (Integral)",
+                    "filterStateConfiguration": null,
+                    "id": "/cdigi",
+                    "patterns": [
+                      "/cdigi"
+                    ],
+                    "urlPattern": "/cdigi"
+                  },
+                  "siteId": "/cdigi",
+                  "validSite": true
+                }
+              }
+            }
+          ],
+          "displayNameProperty": "displayName_es"
+        }
+      ],
+      "ProductCarritoN": [
+        {
+          "displayNamePropertyAlias": "displayName",
+          "@type": "Neticel_ProductCarrito",
+          "name": "Neticel Product Carrito",
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/Web/product page/product landing page",
+            "ecr:innerPath": "ProductCarritoN[0]"
+          }
+        }
+      ],
+      "endeca:auditInfo": {
+        "ecr:resourcePath": "content/Web/product page/product landing page",
+        "ecr:innerPath": null
+      },
+      "name": "Neticel Product Landing Page",
+      "ProductSucursalesN": [],
+      "ProductImageN": [
+        {
+          "displayNamePropertyAlias": "displayName",
+          "@type": "Neticel_ProductImage",
+          "name": "Neticel Product Image",
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/Web/product page/product landing page",
+            "ecr:innerPath": "ProductImageN[0]"
+          }
+        }
+      ],
+      "@error": "No record state found.  Check the configuration for this cartridge."
+    }
+  ],
+  "@type": "Neticel_PageSlot",
+  "atg:currentSiteProductionURL": "/sitios/cdigi",
+  "endeca:contentPath": "/producto",
+  "contentPaths": [
+    "/content/Web/product page"
+  ],
+  "canonicalLink": {
+    "contentPath": "/producto",
+    "@class": "com.endeca.infront.cartridge.model.NavigationAction",
+    "label": "",
+    "navigationState": "?Nf=product.endDate%7CGTEQ+1.7799264E12%7C%7Cproduct.startDate%7CLTEQ+1.7799264E12&Nr=AND%28product.sDisp_200%3A1004%2Cproduct.language%3Aespa%C3%B1ol%2COR%28product.siteId%3ACotoDigital%29%29",
+    "siteRootPath": "/pages",
+    "siteState": {
+      "@class": "com.endeca.infront.site.model.SiteState",
+      "contentPath": "/producto/jabón-líquido-matic-fragancia-limón-granby-3l",
+      "matchedUrlPattern": null,
+      "properties": {},
+      "siteDefinition": {
+        "@class": "com.endeca.infront.site.model.SiteDefinition",
+        "displayName": "Coto Digital (Integral)",
+        "filterStateConfiguration": null,
+        "id": "/cdigi",
+        "patterns": [
+          "/cdigi"
+        ],
+        "urlPattern": "/cdigi"
+      },
+      "siteId": "/cdigi",
+      "validSite": true
+    }
+  },
+  "ruleLimit": "1",
+  "templateIds": [],
+  "templateTypes": [
+    "Page"
+  ],
+  "endeca:siteState": {
+    "@class": "com.endeca.infront.site.model.SiteState",
+    "contentPath": "/producto/jabón-líquido-matic-fragancia-limón-granby-3l",
+    "matchedUrlPattern": null,
+    "properties": {},
+    "siteDefinition": {
+      "@class": "com.endeca.infront.site.model.SiteDefinition",
+      "displayName": "Coto Digital (Integral)",
+      "filterStateConfiguration": null,
+      "id": "/cdigi",
+      "patterns": [
+        "/cdigi"
+      ],
+      "urlPattern": "/cdigi"
+    },
+    "siteId": "/cdigi",
+    "validSite": true
+  },
+  "name": "Neticel Page Slot",
+  "endeca:auditInfo": {
+    "ecr:resourcePath": "/pages/cdigi/producto",
+    "ecr:innerPath": null
+  },
+  "endeca:siteRootPath": "/pages"
+}

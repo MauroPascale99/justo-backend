@@ -1,0 +1,135 @@
+{
+  "contents": [
+    {
+      "@type": "OneColumnPage",
+      "name": "Content",
+      "endeca:auditInfo": {
+        "ecr:resourcePath": "content/Web/Home Pages/Home Page - Anonimo",
+        "ecr:innerPath": null
+      },
+      "HeaderContent": [],
+      "MainContent": [
+        {
+          "scripts": "<script>\n$(\"#iframePromos\").load(function(){\ntry{\n    $(\"#iframePromos\")[0].contentWindow.startScrolls();\n} catch(err) {}\n    resizeIframe();\n});\n$('#iframePromos').contents().find('body').bind('resize', function(){\n    resizeIframe();\n}); \nfunction scrollToDiv(x){\n    $('html, body').animate({\n        scrollTop: x\n    }, 2000);\n}\nfunction resizeIframe(){\n    document.getElementById('iframePromos').style.height = document.getElementById('iframePromos').contentWindow.document.body.scrollHeight + 10 + 'px';\n    document.getElementById('iframePromos').style.width = \"100%\";\ntry{\n    var lastItem = document.getElementById('iframePromos').contentWindow.document.getElementsByClassName('last_item')[0];\n    var size = lastItem.getBoundingClientRect().top + lastItem.scrollHeight + 80;\n    document.getElementById('iframePromos').style.height = size + \"px\";\n} catch(err) {}\n}\n\n\n\n</script>",
+          "style": "<style type=\"text/css\">#atg_store_contentContainer #atg_store_content{padding-top:0px !important}\nbody,#atg_store_mediaBannerContainer,#atg_store_content{\nbackground-color: #161616;}\n\n#iframePromos{width:100%;}\n.header_cotodig {\n    margin-bottom: 0px !important;\n}\n\n#atg_store_contentContainer {\n    max-width: 100vw;\n    margin: 0px auto;\n}\n\n.atg_store_scrollablePromotionalContent {\n    max-width: 100%;\n    height: auto;\n    margin: 0px auto;\n}\n\n\nbody, #atg_store_mediaBannerContainer, #atg_store_content {\n    background-color: #ebebeb;\n}\n</style>",
+          "vigenciaHasta": "20251231",
+          "@type": "COTO_Iframe",
+          "name": "Lunes Anonimo",
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/Web/Home Pages/Home Page - Anonimo",
+            "ecr:innerPath": "MainContent[0]"
+          },
+          "vigenciaDesde": "20250106",
+          "url": "https://static.cotodigital3.com.ar/sitios/cdigi/static/content/images/cdigi/ofertas/cartridge/nuevahome/2025-01/final.html"
+        },
+        {
+          "scripts": "<script>\n$(\"#iframePromos\").load(function(){\ntry{\n    $(\"#iframePromos\")[0].contentWindow.startScrolls();\n} catch(err) {}\n    resizeIframe();\n});\n$('#iframePromos').contents().find('body').bind('resize', function(){\n    resizeIframe();\n}); \nfunction scrollToDiv(x){\n    $('html, body').animate({\n        scrollTop: x\n    }, 2000);\n}\nfunction resizeIframe(){\n    document.getElementById('iframePromos').style.height = document.getElementById('iframePromos').contentWindow.document.body.scrollHeight + 10 + 'px';\n    document.getElementById('iframePromos').style.width = \"100%\";\ntry{\n    var lastItem = document.getElementById('iframePromos').contentWindow.document.getElementsByClassName('last_item')[0];\n    var size = lastItem.getBoundingClientRect().top + lastItem.scrollHeight + 80;\n    document.getElementById('iframePromos').style.height = size + \"px\";\n} catch(err) {}\n}\n\n\n\n</script>",
+          "style": "<style type=\"text/css\">#atg_store_contentContainer #atg_store_content{padding-top:0px !important}\nbody,#atg_store_mediaBannerContainer,#atg_store_content{\nbackground-color: #161616;}\n\n#iframePromos{width:100%;}\n.header_cotodig {\n    margin-bottom: 0px !important;\n}\n\n#atg_store_contentContainer {\n    max-width: 100vw;\n    margin: 0px auto;\n}\n\n.atg_store_scrollablePromotionalContent {\n    max-width: 100%;\n    height: auto;\n    margin: 0px auto;\n}\n\n\nbody, #atg_store_mediaBannerContainer, #atg_store_content {\n    background-color: #ebebeb;\n}\n</style>",
+          "vigenciaHasta": "20250107",
+          "@type": "COTO_Iframe",
+          "name": "Martes Anonimo",
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/Web/Home Pages/Home Page - Anonimo",
+            "ecr:innerPath": "MainContent[1]"
+          },
+          "vigenciaDesde": "20250107",
+          "url": "https://static.cotodigital3.com.ar/sitios/cdigi/static/content/images/cdigi/ofertas/cartridge/nuevahome/2025-01/martes311224b.html"
+        },
+        {
+          "scripts": "<script>\n$(\"#iframePromos\").load(function(){\ntry{\n    $(\"#iframePromos\")[0].contentWindow.startScrolls();\n} catch(err) {}\n    resizeIframe();\n});\n$('#iframePromos').contents().find('body').bind('resize', function(){\n    resizeIframe();\n}); \nfunction scrollToDiv(x){\n    $('html, body').animate({\n        scrollTop: x\n    }, 2000);\n}\nfunction resizeIframe(){\n    document.getElementById('iframePromos').style.height = document.getElementById('iframePromos').contentWindow.document.body.scrollHeight + 10 + 'px';\n    document.getElementById('iframePromos').style.width = \"100%\";\ntry{\n    var lastItem = document.getElementById('iframePromos').contentWindow.document.getElementsByClassName('last_item')[0];\n    var size = lastItem.getBoundingClientRect().top + lastItem.scrollHeight + 80;\n    document.getElementById('iframePromos').style.height = size + \"px\";\n} catch(err) {}\n}\n\n\n\n</script>",
+          "style": "<style type=\"text/css\">#atg_store_contentContainer #atg_store_content{padding-top:0px !important}\nbody,#atg_store_mediaBannerContainer,#atg_store_content{\nbackground-color: #161616;}\n\n#iframePromos{width:100%;}\n.header_cotodig {\n    margin-bottom: 0px !important;\n}\n\n#atg_store_contentContainer {\n    max-width: 100vw;\n    margin: 0px auto;\n}\n\n.atg_store_scrollablePromotionalContent {\n    max-width: 100%;\n    height: auto;\n    margin: 0px auto;\n}\n\n\nbody, #atg_store_mediaBannerContainer, #atg_store_content {\n    background-color: #ebebeb;\n}\n</style>",
+          "vigenciaHasta": "20250101",
+          "@type": "COTO_Iframe",
+          "name": "Miercoles Anonimo",
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/Web/Home Pages/Home Page - Anonimo",
+            "ecr:innerPath": "MainContent[2]"
+          },
+          "vigenciaDesde": "20250101",
+          "url": "https://static.cotodigital3.com.ar/sitios/cdigi/static/content/images/cdigi/ofertas/cartridge/nuevahome/2025-01/miercoles010125_E.html"
+        },
+        {
+          "scripts": "<script>\n$(\"#iframePromos\").load(function(){\ntry{\n    $(\"#iframePromos\")[0].contentWindow.startScrolls();\n} catch(err) {}\n    resizeIframe();\n});\n$('#iframePromos').contents().find('body').bind('resize', function(){\n    resizeIframe();\n}); \nfunction scrollToDiv(x){\n    $('html, body').animate({\n        scrollTop: x\n    }, 2000);\n}\nfunction resizeIframe(){\n    document.getElementById('iframePromos').style.height = document.getElementById('iframePromos').contentWindow.document.body.scrollHeight + 10 + 'px';\n    document.getElementById('iframePromos').style.width = \"100%\";\ntry{\n    var lastItem = document.getElementById('iframePromos').contentWindow.document.getElementsByClassName('last_item')[0];\n    var size = lastItem.getBoundingClientRect().top + lastItem.scrollHeight + 80;\n    document.getElementById('iframePromos').style.height = size + \"px\";\n} catch(err) {}\n}\n\n\n\n</script>",
+          "style": "<style type=\"text/css\">#atg_store_contentContainer #atg_store_content{padding-top:0px !important}\nbody,#atg_store_mediaBannerContainer,#atg_store_content{\nbackground-color: #161616;}\n\n#iframePromos{width:100%;}\n.header_cotodig {\n    margin-bottom: 0px !important;\n}\n\n#atg_store_contentContainer {\n    max-width: 100vw;\n    margin: 0px auto;\n}\n\n.atg_store_scrollablePromotionalContent {\n    max-width: 100%;\n    height: auto;\n    margin: 0px auto;\n}\n\n\nbody, #atg_store_mediaBannerContainer, #atg_store_content {\n    background-color: #ebebeb;\n}\n</style>",
+          "vigenciaHasta": "20250102",
+          "@type": "COTO_Iframe",
+          "name": "Jueves Anonimo",
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/Web/Home Pages/Home Page - Anonimo",
+            "ecr:innerPath": "MainContent[3]"
+          },
+          "vigenciaDesde": "20250102",
+          "url": "https://static.cotodigital3.com.ar/sitios/cdigi/static/content/images/cdigi/ofertas/cartridge/nuevahome/2025-01/jueves020125_F.html"
+        },
+        {
+          "scripts": "<script>\n$(\"#iframePromos\").load(function(){\ntry{\n    $(\"#iframePromos\")[0].contentWindow.startScrolls();\n} catch(err) {}\n    resizeIframe();\n});\n$('#iframePromos').contents().find('body').bind('resize', function(){\n    resizeIframe();\n}); \nfunction scrollToDiv(x){\n    $('html, body').animate({\n        scrollTop: x\n    }, 2000);\n}\nfunction resizeIframe(){\n    document.getElementById('iframePromos').style.height = document.getElementById('iframePromos').contentWindow.document.body.scrollHeight + 10 + 'px';\n    document.getElementById('iframePromos').style.width = \"100%\";\ntry{\n    var lastItem = document.getElementById('iframePromos').contentWindow.document.getElementsByClassName('last_item')[0];\n    var size = lastItem.getBoundingClientRect().top + lastItem.scrollHeight + 80;\n    document.getElementById('iframePromos').style.height = size + \"px\";\n} catch(err) {}\n}\n\n\n\n</script>\n<p>&nbsp;</p>",
+          "style": "<style type=\"text/css\">#atg_store_contentContainer #atg_store_content{padding-top:0px !important}\nbody,#atg_store_mediaBannerContainer,#atg_store_content{\nbackground-color: #161616;}\n\n#iframePromos{width:100%;}\n.header_cotodig {\n    margin-bottom: 0px !important;\n}\n\n#atg_store_contentContainer {\n    max-width: 100vw;\n    margin: 0px auto;\n}\n\n.atg_store_scrollablePromotionalContent {\n    max-width: 100%;\n    height: auto;\n    margin: 0px auto;\n}\n\n\nbody, #atg_store_mediaBannerContainer, #atg_store_content {\n    background-color: #ebebeb;\n}\n</style>",
+          "vigenciaHasta": "20250103",
+          "@type": "COTO_Iframe",
+          "name": "Viernes  Anonimo",
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/Web/Home Pages/Home Page - Anonimo",
+            "ecr:innerPath": "MainContent[4]"
+          },
+          "vigenciaDesde": "20250103",
+          "url": "https://static.cotodigital3.com.ar/sitios/cdigi/static/content/images/cdigi/ofertas/cartridge/nuevahome/2025-01/viernes030125B.html"
+        },
+        {
+          "scripts": "<script>\n$(\"#iframePromos\").load(function(){\ntry{\n    $(\"#iframePromos\")[0].contentWindow.startScrolls();\n} catch(err) {}\n    resizeIframe();\n});\n$('#iframePromos').contents().find('body').bind('resize', function(){\n    resizeIframe();\n}); \nfunction scrollToDiv(x){\n    $('html, body').animate({\n        scrollTop: x\n    }, 2000);\n}\nfunction resizeIframe(){\n    document.getElementById('iframePromos').style.height = document.getElementById('iframePromos').contentWindow.document.body.scrollHeight + 10 + 'px';\n    document.getElementById('iframePromos').style.width = \"100%\";\ntry{\n    var lastItem = document.getElementById('iframePromos').contentWindow.document.getElementsByClassName('last_item')[0];\n    var size = lastItem.getBoundingClientRect().top + lastItem.scrollHeight + 80;\n    document.getElementById('iframePromos').style.height = size + \"px\";\n} catch(err) {}\n}\n\n\n\n</script>",
+          "style": "<style type=\"text/css\">#atg_store_contentContainer #atg_store_content{padding-top:0px !important}\nbody,#atg_store_mediaBannerContainer,#atg_store_content{\nbackground-color: #161616;}\n\n#iframePromos{width:100%;}\n.header_cotodig {\n    margin-bottom: 0px !important;\n}\n\n#atg_store_contentContainer {\n    max-width: 100vw;\n    margin: 0px auto;\n}\n\n.atg_store_scrollablePromotionalContent {\n    max-width: 100%;\n    height: auto;\n    margin: 0px auto;\n}\n\n\nbody, #atg_store_mediaBannerContainer, #atg_store_content {\n    background-color: #ebebeb;\n}\n</style>",
+          "vigenciaHasta": "20250104",
+          "@type": "COTO_Iframe",
+          "name": "Sabado Anonimo",
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/Web/Home Pages/Home Page - Anonimo",
+            "ecr:innerPath": "MainContent[5]"
+          },
+          "vigenciaDesde": "20250104",
+          "url": "https://static.cotodigital3.com.ar/sitios/cdigi/static/content/images/cdigi/ofertas/cartridge/nuevahome/2025-01/sabado040125b.html"
+        },
+        {
+          "scripts": "<script>\n$(\"#iframePromos\").load(function(){\ntry{\n    $(\"#iframePromos\")[0].contentWindow.startScrolls();\n} catch(err) {}\n    resizeIframe();\n});\n$('#iframePromos').contents().find('body').bind('resize', function(){\n    resizeIframe();\n}); \nfunction scrollToDiv(x){\n    $('html, body').animate({\n        scrollTop: x\n    }, 2000);\n}\nfunction resizeIframe(){\n    document.getElementById('iframePromos').style.height = document.getElementById('iframePromos').contentWindow.document.body.scrollHeight + 10 + 'px';\n    document.getElementById('iframePromos').style.width = \"100%\";\ntry{\n    var lastItem = document.getElementById('iframePromos').contentWindow.document.getElementsByClassName('last_item')[0];\n    var size = lastItem.getBoundingClientRect().top + lastItem.scrollHeight + 80;\n    document.getElementById('iframePromos').style.height = size + \"px\";\n} catch(err) {}\n}\n\n\n\n</script>",
+          "style": "<style type=\"text/css\">#atg_store_contentContainer #atg_store_content{padding-top:0px !important}\nbody,#atg_store_mediaBannerContainer,#atg_store_content{\nbackground-color: #161616;}\n\n#iframePromos{width:100%;}\n.header_cotodig {\n    margin-bottom: 0px !important;\n}\n\n#atg_store_contentContainer {\n    max-width: 100vw;\n    margin: 0px auto;\n}\n\n.atg_store_scrollablePromotionalContent {\n    max-width: 100%;\n    height: auto;\n    margin: 0px auto;\n}\n\n\nbody, #atg_store_mediaBannerContainer, #atg_store_content {\n    background-color: #ebebeb;\n}\n</style>",
+          "vigenciaHasta": "20250105",
+          "@type": "COTO_Iframe",
+          "name": "Domingo Anonimo",
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/Web/Home Pages/Home Page - Anonimo",
+            "ecr:innerPath": "MainContent[6]"
+          },
+          "vigenciaDesde": "20250105",
+          "url": "https://static.cotodigital3.com.ar/sitios/cdigi/static/content/images/cdigi/ofertas/cartridge/nuevahome/2025-01/sabado040125b.html"
+        }
+      ]
+    }
+  ],
+  "@type": "ContentSlot",
+  "atg:currentSiteProductionURL": "/sitios/cdigi",
+  "canonicalLink": {
+    "contentPath": null,
+    "@class": "com.endeca.infront.cartridge.model.NavigationAction",
+    "label": "",
+    "navigationState": "?Nf=product.endDate%7CGTEQ+1.7799264E12%7C%7Cproduct.startDate%7CLTEQ+1.7799264E12&Nr=AND%28product.sDisp_200%3A1004%2Cproduct.language%3Aespa%C3%B1ol%2COR%28product.siteId%3ACotoDigital%29%29&Ntt=7791290795129",
+    "siteRootPath": null,
+    "siteState": {
+      "@class": "com.endeca.infront.site.model.SiteState",
+      "contentPath": "",
+      "matchedUrlPattern": null,
+      "properties": {},
+      "siteDefinition": {
+        "@class": "com.endeca.infront.site.model.SiteDefinition",
+        "displayName": "Coto Digital (Integral)",
+        "filterStateConfiguration": null,
+        "id": "/cdigi",
+        "patterns": [
+          "/cdigi"
+        ],
+        "urlPattern": "/cdigi"
+      },
+      "siteId": "/cdigi",
+      "validSite": true
+    }
+  },
+  "ruleLimit": 1,
+  "contentCollection": "/content/Web/Home Pages"
+}

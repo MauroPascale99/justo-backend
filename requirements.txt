@@ -1,0 +1,14 @@
+psycopg2-binary
+pandas
+numpy
+requests
+rich
+PyYAML
+python-dotenv
+python-slugify
+Unidecode
+tenacity
+cachetools
+openpyxl
+fastapi
+pydantic

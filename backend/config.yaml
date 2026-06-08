@@ -1,0 +1,366 @@
+proyecto:
+  nombre: JUSTO Pricing 360
+  version: 0.3.0-universal
+  modo: universal
+db:
+  # En produccion tipo=postgres y la conexion sale de DATABASE_URL (ver .env).
+  # 'path' SOLO se usa como fallback local con tipo=sqlite (desarrollo).
+  tipo: postgres
+  path: local_data/justo_pricing_local_reference.db
+  batch_size: 1000
+captura:
+  timeout_request: 20
+  max_reintentos: 3
+  delay_entre_requests: 0.8
+  delay_entre_paginas: 1.2
+  delay_entre_fuentes: 8.0
+  max_productos_por_corrida: 50000
+  usar_cache: true
+  ttl_cache_minutos: 60
+  max_paginas_por_categoria: 800
+outputs:
+  directorio: outputs
+  raw_csv: capturas_raw.csv
+  normalizado_csv: capturas_normalizadas.csv
+  errores_csv: errores.csv
+  exportar_excel: true
+logs:
+  directorio: logs
+  nivel: INFO
+  retener_dias: 30
+fuentes:
+  coto:
+    habilitada: true
+    nombre: Coto
+    retailer: coto
+    url_base: https://www.cotodigital.com.ar
+    tipo: atg_json
+    frecuencia_horas: 24
+    headers_extra:
+      Accept-Language: es-AR,es;q=0.9
+    categorias:
+    - nombre: Almacen
+      url: /sitios/cdigi/categoria/catalogo-almac%C3%A9n/_/N-8pub5z
+    - nombre: Bebidas
+      url: /sitios/cdigi/categoria/catalogo-bebidas/_/N-1c1jy9y
+    - nombre: Frescos
+      url: /sitios/cdigi/categoria/catalogo-frescos/_/N-1ewuqo6
+    - nombre: Congelados
+      url: /sitios/cdigi/categoria/catalogo-congelados/_/N-1xgbihs
+    - nombre: Limpieza
+      url: /sitios/cdigi/categoria/catalogo-limpieza/_/N-nityfw
+    - nombre: Perfumeria
+      url: /sitios/cdigi/categoria/catalogo-perfumer%C3%ADa/_/N-cblpjz
+    - nombre: Electro
+      url: /sitios/cdigi/categoria/catalogo-electro/_/N-1ngpk59
+    - nombre: Textil
+      url: /sitios/cdigi/categoria/catalogo-textil/_/N-l8joi7
+    - nombre: Hogar
+      url: /sitios/cdigi/categoria/catalogo-hogar/_/N-qa34ar
+    - nombre: Aire Libre
+      url: /sitios/cdigi/categoria/catalogo-aire-libre/_/N-w7wnle
+  dia:
+    habilitada: true
+    nombre: Dia
+    retailer: dia
+    url_base: https://diaio.vtexcommercestable.com.br
+    tipo: vtex
+    frecuencia_horas: 24
+    vtex_account: diaonline
+    categorias:
+    - nombre: Almacen
+      categoria_id: 1
+    - nombre: Bebidas
+      categoria_id: 164
+    - nombre: Frescos
+      categoria_id: 121
+    - nombre: Congelados
+      categoria_id: 200
+    - nombre: Perfumeria
+      categoria_id: 216
+    - nombre: Limpieza
+      categoria_id: 282
+    - nombre: Lacteos
+      categoria_id: 148
+    - nombre: Mascotas
+      categoria_id: 71
+    - nombre: Desayuno
+      categoria_id: 80
+    - nombre: Bebes y Ninos
+      categoria_id: 53
+    - nombre: Hogar y Deco
+      categoria_id: 256
+    - nombre: Indumentaria y Calzado
+      categoria_id: 334
+  changomas:
+    habilitada: true
+    nombre: Chango Mas
+    retailer: changomas
+    url_base: https://www.masonline.com.ar
+    tipo: vtex
+    frecuencia_horas: 24
+    vtex_account: masonline
+    categorias:
+    - nombre: Aceites Vinagres y Aderezos
+      categoria_id: 200005
+    - nombre: Arroz Legumbres y Pastas
+      categoria_id: 200009
+    - nombre: Caldos Sopas y Pure
+      categoria_id: 200019
+    - nombre: Condimentos y Especias
+      categoria_id: 200027
+    - nombre: Conservas y Enlatados
+      categoria_id: 200029
+    - nombre: Desayunos y Meriendas
+      categoria_id: 200039
+    - nombre: Harinas
+      categoria_id: 200053
+    - nombre: Kiosco
+      categoria_id: 200064
+    - nombre: Snacks
+      categoria_id: 200100
+    - nombre: Reposteria
+      categoria_id: 200094
+    - nombre: Panaderia
+      categoria_id: 200043
+    - nombre: Panificados
+      categoria_id: 200079
+    - nombre: Jugos
+      categoria_id: 200062
+    - nombre: Bebidas Isotonicas y Energizantes
+      categoria_id: 200016
+    - nombre: Fernet y Aperitivos
+      categoria_id: 200044
+    - nombre: Bebidas Blancas Licores y Whiskys
+      categoria_id: 200015
+    - nombre: Lacteos
+      categoria_id: 200066
+    - nombre: Quesos
+      categoria_id: 200093
+    - nombre: Carniceria
+      categoria_id: 200022
+    - nombre: Pescaderia
+      categoria_id: 200088
+    - nombre: Huevos
+      categoria_id: 200057
+    - nombre: Verduras
+      categoria_id: 200103
+    - nombre: Frutas
+      categoria_id: 200048
+    - nombre: Fiambres y Embutidos
+      categoria_id: 200046
+    - nombre: Limpieza del Hogar
+      categoria_id: 200086
+    - nombre: Limpieza de Bano
+      categoria_id: 200113
+    - nombre: Cuidado de la Piel
+      categoria_id: 200031
+    - nombre: Proteccion Femenina
+      categoria_id: 200112
+    - nombre: Bajo y sin Sodio
+      categoria_id: 200107
+    - nombre: Bajo y sin Azucar
+      categoria_id: 200108
+    - nombre: Sin Tacc
+      categoria_id: 200109
+    - nombre: Nuestras Marcas
+      categoria_id: 200110
+    - nombre: Organico
+      categoria_id: 200111
+    - nombre: Vegetariano y Vegano
+      categoria_id: 200091
+    - nombre: Suplementos Dietarios
+      categoria_id: 200097
+  carrefour:
+    habilitada: true
+    nombre: Carrefour
+    retailer: carrefour
+    url_base: https://www.carrefour.com.ar
+    tipo: vtex
+    frecuencia_horas: 24
+    vtex_account: carrefourar
+    categorias:
+    - nombre: Almacén
+      categoria_id: '161'
+    - nombre: Desayuno y merienda
+      categoria_id: '222'
+    - nombre: Bebidas
+      categoria_id: '255'
+    - nombre: Lácteos y productos frescos
+      categoria_id: '292'
+    - nombre: Panadería
+      categoria_id: '336'
+    - nombre: Congelados
+      categoria_id: '347'
+    - nombre: Limpieza
+      categoria_id: '359'
+    - nombre: Perfumería y farmacia
+      categoria_id: '402'
+    - nombre: Mascotas
+      categoria_id: '471'
+  jumbo:
+    habilitada: true
+    nombre: Jumbo
+    retailer: jumbo
+    url_base: https://www.jumbo.com.ar
+    tipo: vtex
+    frecuencia_horas: 24
+    vtex_account: jumboargentina
+    categorias:
+    - nombre: Almacén
+      categoria_id: '1'
+    - nombre: Bebidas
+      categoria_id: '2'
+    - nombre: Quesos y Fiambres
+      categoria_id: '6'
+    - nombre: Lácteos
+      categoria_id: '7'
+    - nombre: Congelados
+      categoria_id: '8'
+    - nombre: Panaderia y Pasteleria
+      categoria_id: '9'
+    - nombre: Perfumería
+      categoria_id: '11'
+    - nombre: Limpieza
+      categoria_id: '13'
+    - nombre: Mascotas
+      categoria_id: '14'
+    - nombre: Panadería
+      categoria_id: '271'
+  disco:
+    habilitada: true
+    nombre: Disco
+    retailer: disco
+    url_base: https://www.disco.com.ar
+    tipo: vtex
+    frecuencia_horas: 24
+    vtex_account: discoargentina
+    categorias:
+    - nombre: Almacén
+      categoria_id: '1'
+    - nombre: Bebidas
+      categoria_id: '2'
+    - nombre: Quesos y Fiambres
+      categoria_id: '6'
+    - nombre: Lácteos
+      categoria_id: '7'
+    - nombre: Congelados
+      categoria_id: '8'
+    - nombre: Panaderia y Pasteleria
+      categoria_id: '9'
+    - nombre: Perfumería
+      categoria_id: '11'
+    - nombre: Limpieza
+      categoria_id: '13'
+    - nombre: Mascotas
+      categoria_id: '14'
+    - nombre: Panadería
+      categoria_id: '271'
+  vea:
+    habilitada: true
+    nombre: Vea
+    retailer: vea
+    url_base: https://www.vea.com.ar
+    tipo: vtex
+    frecuencia_horas: 24
+    vtex_account: veadigital
+    categorias:
+    - nombre: Almacén
+      categoria_id: '1'
+    - nombre: Bebidas
+      categoria_id: '2'
+    - nombre: Quesos y Fiambres
+      categoria_id: '6'
+    - nombre: Lácteos
+      categoria_id: '7'
+    - nombre: Congelados
+      categoria_id: '8'
+    - nombre: Panaderia y Pasteleria
+      categoria_id: '9'
+    - nombre: Perfumería
+      categoria_id: '11'
+    - nombre: Limpieza
+      categoria_id: '13'
+    - nombre: Mascotas
+      categoria_id: '14'
+    - nombre: Panadería
+      categoria_id: '271'
+normalizacion:
+  marcas_conocidas:
+  - Magistral
+  - Cif
+  - Ajax
+  - Flash
+  - Lysoform
+  - Ayudin
+  - Ayudín
+  - Procenex
+  - Mr. Musculo
+  - Mr. Músculo
+  - Skip
+  - Ala
+  - Drive
+  - Ariel
+  - Vanish
+  - Harpic
+  - Nonex
+  - Bingo
+  - Poett
+  - Dove
+  - Vim
+  - Pato
+  - Veja
+  - Fabuloso
+  - Glade
+  - Pledge
+  - Scotch-Brite
+  - Scotch Brite
+  - Downy
+  - Comfort
+  - Suavitel
+  - Ace
+  - Persil
+  - Odex
+  - Sapolio
+  - Rexona
+  - Nivea
+  - Palmolive
+  - Lux
+  - Head & Shoulders
+  - H&S
+  - Sensodyne
+  - Huggies
+  - Bonte
+  - Saladix
+  - BGH
+  - Mazzei
+  - Rinde
+  - Heroe
+  - Ecovita
+  - Coto
+  - Dia
+  - Día
+  - Carrefour
+  - Jumbo
+  - Vea
+  - Disco
+  - Great Value
+  marcas_propias_retailer:
+    coto:
+    - Coto
+    dia:
+    - Dia
+    - Día
+    carrefour:
+    - Carrefour
+    jumbo:
+    - Jumbo
+    vea:
+    - Vea
+    disco:
+    - Disco
+    changomas:
+    - Great Value
+    - Chango Mas
+    - Chango Más
+    - ChangoMas

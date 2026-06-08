@@ -1,0 +1,13 @@
+.git
+.env
+__pycache__/
+**/__pycache__/
+*.pyc
+local_data/
+outputs/
+logs_diarios/
+logs/
+*.log
+*.csv
+*.db
+node_modules/

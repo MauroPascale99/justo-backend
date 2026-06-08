@@ -1,0 +1,11 @@
+services:
+  - type: cron
+    name: justo-robots-diario
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    # 13:00 UTC = 10:00 Argentina (UTC-3)
+    schedule: "0 13 * * *"
+    plan: starter
+    envVars:
+      - key: DATABASE_URL
+        sync: false

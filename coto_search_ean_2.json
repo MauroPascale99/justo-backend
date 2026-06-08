@@ -1,0 +1,881 @@
+{
+  "contents": [
+    {
+      "Bottom": [],
+      "Top": [],
+      "Main": [
+        {
+          "displayNamePropertyAlias": "displayName",
+          "@type": "Product_Detail",
+          "fieldNames": [
+            "parentCategory.displayName",
+            "product.displayName",
+            "product.language",
+            "product.longDescription",
+            "product.nonreturnable",
+            "product.repositoryId",
+            "product.siteId",
+            "sku.activePrice",
+            "sku.displayName",
+            "sku.onSale",
+            "sku.repositoryId"
+          ],
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/NuevoSitio/Productos/Producto Sin Visitados",
+            "ecr:innerPath": "Main[0]"
+          },
+          "name": "Product Detail",
+          "@error": "No record state found.  Check the configuration for this cartridge."
+        }
+      ],
+      "keywordsSEO": "",
+      "descriptionSEO": "",
+      "Header": [
+        {
+          "templateTypes": [
+            "Header_Slot"
+          ],
+          "contents": [
+            {
+              "Bottom": [
+                {
+                  "displayNamePropertyAlias": "displayName",
+                  "@type": "Header_Category",
+                  "name": "Menu Categorias",
+                  "endeca:auditInfo": {
+                    "ecr:resourcePath": "content/Headers/Main/Header con Horarios a la Derecha",
+                    "ecr:innerPath": "Bottom[0]"
+                  }
+                }
+              ],
+              "Top": [
+                {
+                  "displayNamePropertyAlias": "displayName",
+                  "@type": "Header_Top",
+                  "name": "Header_Top",
+                  "endeca:auditInfo": {
+                    "ecr:resourcePath": "content/Headers/Main/Header con Horarios a la Derecha",
+                    "ecr:innerPath": "Top[0]"
+                  },
+                  "subitems": [
+                    {
+                      "linkClass": "",
+                      "@type": "Header_Menu_Item",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": null,
+                        "path": null,
+                        "queryString": null
+                      },
+                      "name": "1",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Headers/Main/Header con Horarios a la Derecha",
+                        "ecr:innerPath": "Top[0]/subitems[0]"
+                      },
+                      "label": "",
+                      "Suscription": [],
+                      "subitems": []
+                    },
+                    {
+                      "linkClass": "",
+                      "@type": "Header_Menu_Item",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": "Global",
+                        "path": null,
+                        "queryString": null
+                      },
+                      "name": "2",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Headers/Main/Header con Horarios a la Derecha",
+                        "ecr:innerPath": "Top[0]/subitems[1]"
+                      },
+                      "label": "",
+                      "Suscription": [],
+                      "subitems": []
+                    },
+                    {
+                      "linkClass": "",
+                      "@type": "Header_Menu_Item",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": "Global",
+                        "path": null,
+                        "queryString": null
+                      },
+                      "name": "3",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Headers/Main/Header con Horarios a la Derecha",
+                        "ecr:innerPath": "Top[0]/subitems[2]"
+                      },
+                      "label": "",
+                      "Suscription": [],
+                      "subitems": []
+                    },
+                    {
+                      "linkClass": "",
+                      "@type": "Header_Menu_Item",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": "Global",
+                        "path": null,
+                        "queryString": null
+                      },
+                      "name": "4",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Headers/Main/Header con Horarios a la Derecha",
+                        "ecr:innerPath": "Top[0]/subitems[3]"
+                      },
+                      "label": "",
+                      "Suscription": [],
+                      "subitems": []
+                    },
+                    {
+                      "@type": "Header_Menu_Item_Horarios_Entrega",
+                      "name": "Horario de Entrega",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Headers/Main/Header con Horarios a la Derecha",
+                        "ecr:innerPath": "Top[0]/subitems[4]"
+                      },
+                      "label": "Horario de Entrega"
+                    }
+                  ]
+                }
+              ],
+              "@type": "Header_Section",
+              "name": "Header Section",
+              "endeca:auditInfo": {
+                "ecr:resourcePath": "content/Headers/Main/Header con Horarios a la Derecha",
+                "ecr:innerPath": null
+              },
+              "Mobile": [
+                {
+                  "displayNamePropertyAlias": "displayName",
+                  "@type": "Header_Mobile_Search",
+                  "name": "Header Mobile Search",
+                  "endeca:auditInfo": {
+                    "ecr:resourcePath": "content/Headers/Main/Header con Horarios a la Derecha",
+                    "ecr:innerPath": "Mobile[0]"
+                  }
+                },
+                {
+                  "displayNamePropertyAlias": "displayName",
+                  "@type": "Header_Mobile_Menu",
+                  "name": "Header Mobile Menu",
+                  "endeca:auditInfo": {
+                    "ecr:resourcePath": "content/Headers/Main/Header con Horarios a la Derecha",
+                    "ecr:innerPath": "Mobile[1]"
+                  }
+                }
+              ],
+              "Center": [
+                {
+                  "displayNamePropertyAlias": "displayName",
+                  "urlImage": "https://www.cotodigital3.com.ar/sitios/cdigi/static/content/images/nuevositio/header/logo_coto.png",
+                  "linkClass": "",
+                  "image_src": "",
+                  "@type": "Header_Logo",
+                  "link": {
+                    "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                    "linkType": "Global",
+                    "path": "/",
+                    "queryString": null
+                  },
+                  "name": "Header Logo",
+                  "endeca:auditInfo": {
+                    "ecr:resourcePath": "content/Headers/Main/Header con Horarios a la Derecha",
+                    "ecr:innerPath": "Center[0]"
+                  }
+                },
+                {
+                  "displayNamePropertyAlias": "displayName",
+                  "@type": "Header_Search",
+                  "name": "Buscador",
+                  "endeca:auditInfo": {
+                    "ecr:resourcePath": "content/Headers/Main/Header con Horarios a la Derecha",
+                    "ecr:innerPath": "Center[1]"
+                  }
+                },
+                {
+                  "displayNamePropertyAlias": "displayName",
+                  "@type": "Header_Banner",
+                  "name": "Header Banner Publicidad",
+                  "endeca:auditInfo": {
+                    "ecr:resourcePath": "content/Headers/Main/Header con Horarios a la Derecha",
+                    "ecr:innerPath": "Center[2]"
+                  }
+                },
+                {
+                  "displayNamePropertyAlias": "displayName",
+                  "@type": "Header_Notifications",
+                  "name": "Header Notifications",
+                  "endeca:auditInfo": {
+                    "ecr:resourcePath": "content/Headers/Main/Header con Horarios a la Derecha",
+                    "ecr:innerPath": "Center[3]"
+                  }
+                },
+                {
+                  "displayNamePropertyAlias": "displayName",
+                  "@type": "Header_Cart",
+                  "name": "mini cart",
+                  "endeca:auditInfo": {
+                    "ecr:resourcePath": "content/Headers/Main/Header con Horarios a la Derecha",
+                    "ecr:innerPath": "Center[4]"
+                  }
+                },
+                {
+                  "displayNamePropertyAlias": "displayName",
+                  "@type": "Header_User",
+                  "name": "Registro-Menu usuario",
+                  "endeca:auditInfo": {
+                    "ecr:resourcePath": "content/Headers/Main/Header con Horarios a la Derecha",
+                    "ecr:innerPath": "Center[5]"
+                  }
+                }
+              ]
+            }
+          ],
+          "@type": "Header_Slot",
+          "name": "Slot for Header items",
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/NuevoSitio/Productos/Producto Sin Visitados",
+            "ecr:innerPath": "Header[0]"
+          },
+          "contentPaths": [
+            "/content/Headers/Main"
+          ],
+          "ruleLimit": "1",
+          "templateIds": []
+        }
+      ],
+      "@type": "Product_LandingPage",
+      "name": "Product Page",
+      "endeca:auditInfo": {
+        "ecr:resourcePath": "content/NuevoSitio/Productos/Producto Sin Visitados",
+        "ecr:innerPath": null
+      },
+      "titleSEO": "",
+      "Footer": [
+        {
+          "templateTypes": [
+            "Footer_Slot"
+          ],
+          "contents": [
+            {
+              "FooterBottom": [
+                {
+                  "content": "<div class=\"caption\">2021 | Todos los derechos reservados - COTO C.I.C.S.A.</div>\n\n<div class=\"carteles-legales\">\n<ul>\n\t<li class=\"proteccion-datos-personales\"><a href=\"https://www.argentina.gob.ar/aaip/datospersonales\" target=\"_blank\"><img alt=\"\" src=\"https://static.cotodigital3.com.ar/sitios/cdigi/static/content/images/nuevositio/footer/etiquetas/proteccion-datos-personales.png\" /></a></li>\n\t<li class=\"defensa-consumidor-1\"><a href=\"https://buenosaires.gob.ar/jefaturadegabinete/atencion-ciudadana-y-gestion-comunal/defensa-al-consumidor\" target=\"_blank\"><img alt=\"\" src=\"https://static.cotodigital3.com.ar/sitios/cdigi/static/content/images/nuevositio/footer/etiquetas/defensa-al-consumidor.jpg\" /></a></li>\n\t<li class=\"defensa-consumidor-provincia\"><a href=\"https://www.gba.gob.ar/defensaconsumidores\" target=\"_blank\"><img alt=\"\" src=\"https://static.cotodigital3.com.ar/sitios/cdigi/static/content/images/nuevositio/footer/etiquetas/defensa-al-consumidor-provincia.jpg\" /></a></li>\n\t<li class=\"defensa-consumidor-santa-fe\"><a href=\"https://www.santafe.gob.ar/tramites\" target=\"_blank\"><img alt=\"\" src=\"https://static.cotodigital3.com.ar/sitios/cdigi/static/content/images/nuevositio/footer/etiquetas/defensa-al-consumidor-santa-fe.jpg\" /></a></li>\n\t<li class=\"clave-fiscal\"><a href=\"https://servicioscf.afip.gob.ar/publico/denuncias/denunciaCD.aspx\" target=\"_blank\"><img alt=\"\" src=\"https://static.cotodigital3.com.ar/sitios/cdigi/static/content/images/nuevositio/footer/etiquetas/clave-fiscal.jpg\" /></a></li>\n\t<li class=\"defensa-consumidor-entre-rios\"><a href=\"https://portal.entrerios.gov.ar/produccion/defensaconsumidor/inicio\" target=\"_blank\"><img alt=\"\" src=\"https://static.cotodigital3.com.ar/sitios/cdigi/static/content/images/nuevositio/footer/etiquetas/defensa-al-consumidor-entre-rios.jpg\" /></a></li>\n\t<li class=\"defensa-consumidor-mendoza\"><a href=\"https://www.mendoza.gov.ar/consumidores/\" target=\"_blank\"><img alt=\"\" src=\"https://static.cotodigital3.com.ar/sitios/cdigi/static/content/images/nuevositio/footer/etiquetas/defensa-al-consumidor-mendoza.jpg\" /></a></li>\n\t<li class=\"defensa-consumidor-neuquen\"><a href=\"https://proteccionalconsumidor.neuquen.gob.ar/\" target=\"_blank\"><img alt=\"\" src=\"https://static.cotodigital3.com.ar/sitios/cdigi/static/content/images/nuevositio/footer/etiquetas/defensa-al-consumidor-neuquen.jpg\" /></a></li>\n\t<li class=\"defensa-consumidor-2\"><a href=\"https://www.argentina.gob.ar/produccion/defensadelconsumidor\" target=\"_blank\"><img alt=\"\" src=\"https://static.cotodigital3.com.ar/sitios/cdigi/static/content/images/nuevositio/footer/etiquetas/defensa-al-consumidor_2.jpg\" /></a></li>\n</ul>\n\n<div class=\"caption detalles-coto\">COTO C.I.C.S.A. CUIT: 30-54808315-6 - Nombre comercial: COTO - WWW.COTO.COM.AR. - Paysand&uacute; 1842 de la Ciudad Aut&oacute;noma de Buenos Aires. Correo electr&oacute;nico de servicio de atenci&oacute;n al consumidor: info@coto.com.ar.<br />\nDefensa de las y los Consumidores. Para reclamos <a href=\"https://autogestion.produccion.gob.ar/consumidores\">haz click ac&aacute;</a></div>\n</div>",
+                  "linkClass": "",
+                  "image_src": "",
+                  "@type": "Footer_HTML",
+                  "name": "legales",
+                  "endeca:auditInfo": {
+                    "ecr:resourcePath": "content/Footers/Main/Footer",
+                    "ecr:innerPath": "FooterBottom[0]"
+                  }
+                }
+              ],
+              "@type": "Footer_Section",
+              "FooterCenter": [
+                {
+                  "linkClass": "categorias",
+                  "@type": "Footer_Menu",
+                  "link": {
+                    "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                    "linkType": null,
+                    "path": null,
+                    "queryString": null
+                  },
+                  "name": "Categorias",
+                  "endeca:auditInfo": {
+                    "ecr:resourcePath": "content/Footers/Main/Footer",
+                    "ecr:innerPath": "FooterCenter[0]"
+                  },
+                  "label": "Categorías",
+                  "subitems": [
+                    {
+                      "isButton": false,
+                      "linkClass": "",
+                      "@type": "Footer_MenuItem",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": "Global",
+                        "path": "/sitios/cdigi/productos/ofertas/todas-las-ofertas",
+                        "queryString": null
+                      },
+                      "name": "Ofertas",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Footers/Main/Footer",
+                        "ecr:innerPath": "FooterCenter[0]/subitems[0]"
+                      },
+                      "typeRedirect": "Navigation State",
+                      "label": "Ofertas",
+                      "src": "",
+                      "subitems": [],
+                      "isIMG": false
+                    },
+                    {
+                      "isButton": false,
+                      "linkClass": "",
+                      "@type": "Footer_MenuItem",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": "Global",
+                        "path": "/sitios/cdigi/productos/categorias/catalogo-frescos-lácteos/catv00001295",
+                        "queryString": null
+                      },
+                      "name": "Lacteos",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Footers/Main/Footer",
+                        "ecr:innerPath": "FooterCenter[0]/subitems[1]"
+                      },
+                      "typeRedirect": "Navigation State",
+                      "label": "Lácteos",
+                      "src": "",
+                      "subitems": [],
+                      "isIMG": false
+                    },
+                    {
+                      "isButton": false,
+                      "linkClass": "",
+                      "@type": "Footer_MenuItem",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": "Global",
+                        "path": "/sitios/cdigi/productos/categorias/catalogo-bebidas/catv00001256",
+                        "queryString": null
+                      },
+                      "name": "Bebidas",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Footers/Main/Footer",
+                        "ecr:innerPath": "FooterCenter[0]/subitems[2]"
+                      },
+                      "typeRedirect": "Navigation State",
+                      "label": "Bebidas",
+                      "src": "",
+                      "subitems": [],
+                      "isIMG": false
+                    },
+                    {
+                      "isButton": false,
+                      "linkClass": "",
+                      "@type": "Footer_MenuItem",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": "Global",
+                        "path": "/sitios/cdigi/productos/categorias/catalogo-congelados/catv00001296",
+                        "queryString": null
+                      },
+                      "name": "Congelados",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Footers/Main/Footer",
+                        "ecr:innerPath": "FooterCenter[0]/subitems[3]"
+                      },
+                      "typeRedirect": "Navigation State",
+                      "label": "Congelados",
+                      "src": "",
+                      "subitems": [],
+                      "isIMG": false
+                    },
+                    {
+                      "isButton": false,
+                      "linkClass": "",
+                      "@type": "Footer_MenuItem",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": "Global",
+                        "path": "/sitios/cdigi/productos/categorias/catalogo-limpieza/catv00001258",
+                        "queryString": null
+                      },
+                      "name": "Limpieza",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Footers/Main/Footer",
+                        "ecr:innerPath": "FooterCenter[0]/subitems[4]"
+                      },
+                      "typeRedirect": "Navigation State",
+                      "label": "Limpieza",
+                      "src": "",
+                      "subitems": [],
+                      "isIMG": false
+                    },
+                    {
+                      "isButton": false,
+                      "linkClass": "",
+                      "@type": "Footer_MenuItem",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": "Global",
+                        "path": "/sitios/cdigi/productos/categorias/catalogo-perfumería/catv00001257",
+                        "queryString": null
+                      },
+                      "name": "Perfumería",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Footers/Main/Footer",
+                        "ecr:innerPath": "FooterCenter[0]/subitems[5]"
+                      },
+                      "typeRedirect": "Navigation State",
+                      "label": "Perfumería",
+                      "src": "",
+                      "subitems": [],
+                      "isIMG": false
+                    },
+                    {
+                      "isButton": false,
+                      "linkClass": "",
+                      "@type": "Footer_MenuItem",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": "Global",
+                        "path": "/sitios/cdigi/productos/categorias/catalogo-electro/catv00001990",
+                        "queryString": null
+                      },
+                      "name": "Electros",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Footers/Main/Footer",
+                        "ecr:innerPath": "FooterCenter[0]/subitems[6]"
+                      },
+                      "typeRedirect": "Navigation State",
+                      "label": "Electros",
+                      "src": "",
+                      "subitems": [],
+                      "isIMG": false
+                    },
+                    {
+                      "isButton": false,
+                      "linkClass": "",
+                      "@type": "Footer_MenuItem",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": "Global",
+                        "path": "/sitios/cdigi/productos/categorias/catalogo-textil/catv00001259",
+                        "queryString": null
+                      },
+                      "name": "Textil",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Footers/Main/Footer",
+                        "ecr:innerPath": "FooterCenter[0]/subitems[7]"
+                      },
+                      "typeRedirect": "Navigation State",
+                      "label": "Textil",
+                      "src": "",
+                      "subitems": [],
+                      "isIMG": false
+                    },
+                    {
+                      "isButton": false,
+                      "linkClass": "",
+                      "@type": "Footer_MenuItem",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": "Global",
+                        "path": "/sitios/cdigi/productos/categorias/catalogo-hogar/catv00001260",
+                        "queryString": null
+                      },
+                      "name": "Hogar",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Footers/Main/Footer",
+                        "ecr:innerPath": "FooterCenter[0]/subitems[8]"
+                      },
+                      "typeRedirect": "Navigation State",
+                      "label": "Hogar",
+                      "src": "",
+                      "subitems": [],
+                      "isIMG": false
+                    }
+                  ]
+                },
+                {
+                  "linkClass": "sobre-nosotros",
+                  "@type": "Footer_Menu",
+                  "link": {
+                    "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                    "linkType": null,
+                    "path": null,
+                    "queryString": null
+                  },
+                  "name": "Sobre Nosotros",
+                  "endeca:auditInfo": {
+                    "ecr:resourcePath": "content/Footers/Main/Footer",
+                    "ecr:innerPath": "FooterCenter[1]"
+                  },
+                  "label": "Sobre Nosotros",
+                  "subitems": [
+                    {
+                      "isButton": false,
+                      "linkClass": "",
+                      "@type": "Footer_MenuItem",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": "Navigation State",
+                        "path": "/pages/cdigi/nosotros",
+                        "queryString": null
+                      },
+                      "name": "Conocenos",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Footers/Main/Footer",
+                        "ecr:innerPath": "FooterCenter[1]/subitems[0]"
+                      },
+                      "typeRedirect": "Navigation State",
+                      "label": "Conocenos",
+                      "src": "",
+                      "subitems": [],
+                      "isIMG": false
+                    },
+                    {
+                      "isButton": false,
+                      "linkClass": "",
+                      "@type": "Footer_MenuItem",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": "Global",
+                        "path": "https://www.coto.com.ar/empleos/#/home",
+                        "queryString": null
+                      },
+                      "name": "Trabajá con Nosotros",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Footers/Main/Footer",
+                        "ecr:innerPath": "FooterCenter[1]/subitems[1]"
+                      },
+                      "typeRedirect": "Global",
+                      "label": "Trabajá con Nosotros",
+                      "src": "",
+                      "subitems": [],
+                      "isIMG": false
+                    },
+                    {
+                      "isButton": false,
+                      "linkClass": "",
+                      "@type": "Footer_MenuItem",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": "Global",
+                        "path": "https://www.coto.com.ar/mapassucursales/Sucursales/RadiosDeEntrega.aspx",
+                        "queryString": null
+                      },
+                      "name": "Nuestras Sucursales",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Footers/Main/Footer",
+                        "ecr:innerPath": "FooterCenter[1]/subitems[2]"
+                      },
+                      "typeRedirect": "Global",
+                      "label": "Nuestras Sucursales",
+                      "src": "",
+                      "subitems": [],
+                      "isIMG": false
+                    },
+                    {
+                      "isButton": false,
+                      "linkClass": "",
+                      "@type": "Footer_MenuItem",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": null,
+                        "path": null,
+                        "queryString": null
+                      },
+                      "name": "Comunidad Coto",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Footers/Main/Footer",
+                        "ecr:innerPath": "FooterCenter[1]/subitems[3]"
+                      },
+                      "typeRedirect": "",
+                      "label": "Comunidad Coto",
+                      "src": "https://static.cotodigital3.com.ar/sitios/cdigi/static/content/images/nuevositio/footer/icono_comunidadCOTO.png",
+                      "subitems": [],
+                      "isIMG": true
+                    },
+                    {
+                      "isButton": false,
+                      "linkClass": "",
+                      "@type": "Footer_MenuItem",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": "Global",
+                        "path": "https://www.comunidadcoto.com.ar/comunidad/acceso.jsf",
+                        "queryString": null
+                      },
+                      "name": "Sumate a Nuestra Comunidad",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Footers/Main/Footer",
+                        "ecr:innerPath": "FooterCenter[1]/subitems[4]"
+                      },
+                      "typeRedirect": "Global",
+                      "label": "Sumate a Nuestra Comunidad",
+                      "src": "",
+                      "subitems": [],
+                      "isIMG": false
+                    },
+                    {
+                      "isButton": false,
+                      "linkClass": "",
+                      "@type": "Footer_MenuItem",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": "Global",
+                        "path": "https://www.comunidadcoto.com.ar/comunidad/paginas/cliente/beneficios.jsf",
+                        "queryString": null
+                      },
+                      "name": "Beneficios de Comunidad",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Footers/Main/Footer",
+                        "ecr:innerPath": "FooterCenter[1]/subitems[5]"
+                      },
+                      "typeRedirect": "Global",
+                      "label": "Beneficios de Comunidad",
+                      "src": "",
+                      "subitems": [],
+                      "isIMG": false
+                    },
+                    {
+                      "isButton": false,
+                      "linkClass": "",
+                      "@type": "Footer_MenuItem",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": "Global",
+                        "path": "https://www.comunidadcoto.com.ar/comunidad/acceso.jsf",
+                        "queryString": null
+                      },
+                      "name": "Web de Comunidad",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Footers/Main/Footer",
+                        "ecr:innerPath": "FooterCenter[1]/subitems[6]"
+                      },
+                      "typeRedirect": "Global",
+                      "label": "Web de Comunidad",
+                      "src": "",
+                      "subitems": [],
+                      "isIMG": false
+                    }
+                  ]
+                },
+                {
+                  "linkClass": "servicio-cliente",
+                  "@type": "Footer_Menu",
+                  "link": {
+                    "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                    "linkType": null,
+                    "path": null,
+                    "queryString": null
+                  },
+                  "name": "Servicio al Cliente",
+                  "endeca:auditInfo": {
+                    "ecr:resourcePath": "content/Footers/Main/Footer",
+                    "ecr:innerPath": "FooterCenter[2]"
+                  },
+                  "label": "Servicio al Cliente",
+                  "subitems": [
+                    {
+                      "isButton": true,
+                      "linkClass": "btn btn-arrepentimiento",
+                      "@type": "Footer_MenuItem",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": "Global",
+                        "path": "https://coto.s1gateway.com/pe/zvXxmA1f5f9d",
+                        "queryString": null
+                      },
+                      "name": "Libro de Quejas Online",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Footers/Main/Footer",
+                        "ecr:innerPath": "FooterCenter[2]/subitems[0]"
+                      },
+                      "typeRedirect": "Global",
+                      "label": "Libro de Quejas Online",
+                      "src": "",
+                      "subitems": [],
+                      "isIMG": false
+                    },
+                    {
+                      "isButton": true,
+                      "linkClass": "btn btn-arrepentimiento",
+                      "@type": "Footer_MenuItem",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": "Global",
+                        "path": "https://coto.s1gateway.com/pe/60fa448ad76ec2f325d31d7b98df4197efbf8aeb546c1e645f23659bca41800ff4c102bc0f963e5b",
+                        "queryString": null
+                      },
+                      "name": "Botón de Arrepentimiento",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Footers/Main/Footer",
+                        "ecr:innerPath": "FooterCenter[2]/subitems[1]"
+                      },
+                      "typeRedirect": "Global",
+                      "label": "Botón de Arrepentimiento",
+                      "src": "",
+                      "subitems": [],
+                      "isIMG": false
+                    },
+                    {
+                      "isButton": true,
+                      "linkClass": "btn btn-arrepentimiento",
+                      "@type": "Footer_MenuItem",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": "Global",
+                        "path": "https://coto.s1gateway.com/pe/4058e90c83b0596e9f4d4114a009d886743b7948161c29ac41698db284d8f70dcbde7143bb421c02",
+                        "queryString": null
+                      },
+                      "name": "Botón Baja de Servicio",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Footers/Main/Footer",
+                        "ecr:innerPath": "FooterCenter[2]/subitems[2]"
+                      },
+                      "typeRedirect": "Global",
+                      "label": "Baja de Servicio",
+                      "src": "",
+                      "subitems": [],
+                      "isIMG": false
+                    },
+                    {
+                      "isButton": false,
+                      "linkClass": "",
+                      "@type": "Footer_MenuItem",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": "Global",
+                        "path": "/sitios/cdigi/ayuda?s=1",
+                        "queryString": null
+                      },
+                      "name": "Preguntas Frecuentes",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Footers/Main/Footer",
+                        "ecr:innerPath": "FooterCenter[2]/subitems[3]"
+                      },
+                      "typeRedirect": "Navigation State",
+                      "label": "Preguntas Frecuentes",
+                      "src": "",
+                      "subitems": [],
+                      "isIMG": false
+                    },
+                    {
+                      "isButton": false,
+                      "linkClass": "",
+                      "@type": "Footer_MenuItem",
+                      "link": {
+                        "@class": "com.endeca.infront.cartridge.model.LinkBuilder",
+                        "linkType": "Global",
+                        "path": "/sitios/cdigi/ayuda?s=2",
+                        "queryString": null
+                      },
+                      "name": "Términos y Condiciones",
+                      "endeca:auditInfo": {
+                        "ecr:resourcePath": "content/Footers/Main/Footer",
+                        "ecr:innerPath": "FooterCenter[2]/subitems[4]"
+                      },
+                      "typeRedirect": "Navigation State",
+                      "label": "Términos y Condiciones",
+                      "src": "",
+                      "subitems": [],
+                      "isIMG": false
+                    }
+                  ]
+                },
+                {
+                  "content": "<div class=\"col-f contacto\">\n<h4>Cont&aacute;ctanos</h4>\n\n<p>Horario de atenci&oacute;n: Lunes a Viernes de 8:00 a 22:00 hs y S&aacute;bados de 8hs a 19:00hs.</p>\n\n<div class=\"telefono-contacto\"><img alt=\"\" src=\"https://static.cotodigital3.com.ar/sitios/cdigi/static/content/images/nuevositio/footer/icono-telefono.png\" />\n<h2><a href=\"tel:0800-888-4848\">0800-888-4848</a></h2>\n</div>\n\n<div class=\"mail-contacto\"><img alt=\"\" src=\"https://static.cotodigital3.com.ar/sitios/cdigi/static/content/images/nuevositio/footer/icono-email.png\" /> <a href=\"mailto:ayuda_cotodigital@cotodigital.com.ar\">ayuda_cotodigital@cotodigital.com.ar</a></div>\n\n<div class=\"whatsapp-contacto\"><img alt=\"\" src=\"https://static.cotodigital3.com.ar/sitios/cdigi/static/content/images/nuevositio/footer/icono_whatsapp.png\" /> <span> </span>\n\n<p><span><a href=\"https://wa.me/5491126412851\" target=\"'_blank'\"><span style=\"font-size: 18px; display: block;\">+54 9 1126412851</span>WhatsApp Exclusivo de COTO Digital</a> </span></p>\n<span> </span></div>\n</div>\n\n<div class=\"col-f redes-sociales\">\n<h4>&iexcl;Seguinos!</h4>\n\n<p>Enterate de las promos y novedades.</p>\n\n<ul>\n\t<li class=\"social-link\" id=\"instagram\"><a href=\"https://www.instagram.com/coto_ar/\"><img alt=\"\" src=\"https://static.cotodigital3.com.ar/sitios/cdigi/static/content/images/nuevositio/footer/icono_instagram.png\" /> </a></li>\n\t<li class=\"social-link\" id=\"facebook\"><a href=\"https://www.facebook.com/coto\"><img alt=\"\" src=\"https://static.cotodigital3.com.ar/sitios/cdigi/static/content/images/nuevositio/footer/icono_facebook.png\" /> </a></li>\n\t<li class=\"social-link\" id=\"twitter\"><a href=\"https://twitter.com/coto_ar\"><img alt=\"\" src=\"https://static.cotodigital3.com.ar/sitios/cdigi/static/content/images/nuevositio/footer/icono_twitter.png\" /> </a></li>\n</ul>\n</div>",
+                  "linkClass": "col-f contacto",
+                  "image_src": "",
+                  "@type": "Footer_HTML",
+                  "name": "Contáctanos",
+                  "endeca:auditInfo": {
+                    "ecr:resourcePath": "content/Footers/Main/Footer",
+                    "ecr:innerPath": "FooterCenter[3]"
+                  }
+                }
+              ],
+              "name": "Footer Section",
+              "endeca:auditInfo": {
+                "ecr:resourcePath": "content/Footers/Main/Footer",
+                "ecr:innerPath": null
+              },
+              "FooterTop": [
+                {
+                  "displayNamePropertyAlias": "displayName",
+                  "isFooter": true,
+                  "@type": "Footer_Suscription",
+                  "name": "Footer_Suscription",
+                  "endeca:auditInfo": {
+                    "ecr:resourcePath": "content/Footers/Main/Footer",
+                    "ecr:innerPath": "FooterTop[0]"
+                  }
+                }
+              ]
+            }
+          ],
+          "@type": "Footer_Slot",
+          "name": "Footer_Slot",
+          "endeca:auditInfo": {
+            "ecr:resourcePath": "content/NuevoSitio/Productos/Producto Sin Visitados",
+            "ecr:innerPath": "Footer[0]"
+          },
+          "contentPaths": [
+            "/content/Footers/Main"
+          ],
+          "ruleLimit": "1",
+          "templateIds": []
+        }
+      ]
+    }
+  ],
+  "@type": "PageSlot",
+  "atg:currentSiteProductionURL": "/sitios/cdigi",
+  "endeca:contentPath": "/productos",
+  "contentPaths": [
+    "/content/NuevoSitio/Productos"
+  ],
+  "canonicalLink": {
+    "contentPath": "/productos",
+    "@class": "com.endeca.infront.cartridge.model.NavigationAction",
+    "label": "",
+    "navigationState": "?Nf=product.startDate%7CLTEQ+1.7799264E12%7C%7Cproduct.endDate%7CGTEQ+1.7799264E12&Nr=AND%28product.sDisp_200%3A1004%2Cproduct.language%3Aespa%C3%B1ol%2COR%28product.siteId%3ACotoDigital%29%29&Ntt=7791290795129",
+    "siteRootPath": "/pages",
+    "siteState": {
+      "@class": "com.endeca.infront.site.model.SiteState",
+      "contentPath": "/productos",
+      "matchedUrlPattern": null,
+      "properties": {},
+      "siteDefinition": {
+        "@class": "com.endeca.infront.site.model.SiteDefinition",
+        "displayName": "Coto Digital (Integral)",
+        "filterStateConfiguration": null,
+        "id": "/cdigi",
+        "patterns": [
+          "/cdigi"
+        ],
+        "urlPattern": "/cdigi"
+      },
+      "siteId": "/cdigi",
+      "validSite": true
+    }
+  },
+  "ruleLimit": "1",
+  "templateIds": [],
+  "templateTypes": [
+    "Page"
+  ],
+  "endeca:siteState": {
+    "@class": "com.endeca.infront.site.model.SiteState",
+    "contentPath": "/productos",
+    "matchedUrlPattern": null,
+    "properties": {},
+    "siteDefinition": {
+      "@class": "com.endeca.infront.site.model.SiteDefinition",
+      "displayName": "Coto Digital (Integral)",
+      "filterStateConfiguration": null,
+      "id": "/cdigi",
+      "patterns": [
+        "/cdigi"
+      ],
+      "urlPattern": "/cdigi"
+    },
+    "siteId": "/cdigi",
+    "validSite": true
+  },
+  "name": "Static Page Slot",
+  "endeca:auditInfo": {
+    "ecr:resourcePath": "/pages/cdigi/productos",
+    "ecr:innerPath": null
+  },
+  "endeca:siteRootPath": "/pages"
+}
