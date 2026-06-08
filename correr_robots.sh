@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
-# Corrida diaria de los robots JUSTO / Klave Pricing (pensado para contenedor).
-# No usa 'set -e': si una cadena falla, igual seguimos con las demas.
+# Corrida diaria JUSTO / Klave Pricing.
+# Modelo de dos niveles:
+#  1) CATALOGO (liviano, --solo-catalogo): refresca el indice de busqueda de TODAS
+#     las cadenas (productos_fuente) para que un usuario nuevo pueda encontrar sus
+#     productos al ingresar. NO guarda historico de precios de todo el catalogo.
+#  2) CAPTURA DIRIGIDA: precios reales de los productos de clientes + sus
+#     competidores en las 7 cadenas (esto si guarda historico).
+#  3) Postproceso + 4) Alertas.
 set -uo pipefail
 cd "$(dirname "$0")"
 
@@ -14,10 +20,8 @@ paso () {
   echo "[exit=$?]"
 }
 
-paso "VTEX completo (Carrefour, Jumbo, Disco, Vea, Chango Mas)" backend/scripts/capturar_catalogo_vtex_completo.py
-paso "Coto (catalogo)"        backend/main.py --fuente coto
-paso "Dia"                    backend/main.py --fuente dia
-paso "Captura dirigida (clientes + competidores, todas las cadenas)" backend/scripts/capturar_especifico_justo.py
+paso "Catalogo (indice de busqueda, todas las cadenas - liviano)" backend/scripts/capturar_catalogo_vtex_completo.py --solo-catalogo
+paso "Captura dirigida (precios clientes + competidores)" backend/scripts/capturar_especifico_justo.py
 paso "Postproceso + Supabase" backend/scripts/robot_maestro_universal.py --solo-postproceso
 paso "Motor de eventos y alertas" backend/scripts/motor_eventos_precio.py
 

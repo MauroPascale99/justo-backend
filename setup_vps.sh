@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ======== EDITA ESTAS DOS LINEAS ANTES DE PEGAR ========
-REPO_URL="${REPO_URL:-https://github.com/TU_USUARIO/justo-backend.git}"
+REPO_URL="${REPO_URL:-https://github.com/MauroPascale99/justo-backend.git}"
 DATABASE_URL="${DATABASE_URL:-PEGA_TU_DATABASE_URL_AQUI}"
 # =======================================================
 

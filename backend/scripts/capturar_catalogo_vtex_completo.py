@@ -251,12 +251,22 @@ def normalizar_producto(p: dict, retailer: str) -> dict:
 # GUARDADO EN SUPABASE / POSTGRES
 # ══════════════════════════════════════════════════════════════════════════════
 
+GUARDAR_CAPTURAS = True  # --solo-catalogo lo pone en False (modo liviano para busqueda)
+
 def get_pg_conn():
     import psycopg2
     url = os.environ.get("DATABASE_URL")
     if not url:
         raise ValueError("DATABASE_URL no encontrada en el .env")
-    return psycopg2.connect(url)
+    conn = psycopg2.connect(url)
+    # Si una corrida se corta (Ctrl+C), evita que queden transacciones colgadas
+    # reteniendo locks via el pooler: la sesion idle se auto-termina.
+    with conn.cursor() as c:
+        c.execute("SET idle_in_transaction_session_timeout = '30s'")
+        c.execute("SET statement_timeout = '60s'")
+        c.execute("SET lock_timeout = '10s'")
+    conn.commit()
+    return conn
 
 
 def obtener_id_fuente(cur, retailer: str) -> int | None:
@@ -358,7 +368,7 @@ def guardar_batch(productos: list[dict], retailer: str,
             else:
                 actualizados += 1
 
-            if prod["precio_actual"]:
+            if GUARDAR_CAPTURAS and prod["precio_actual"]:
                 ok = insertar_captura(cur, prod, id_prod, fecha, hora)
                 if ok:
                     capturas += 1
@@ -508,12 +518,21 @@ def main():
         help="Solo muestra categorías, no guarda nada.",
     )
     parser.add_argument(
+        "--solo-catalogo",
+        action="store_true",
+        help="Modo liviano: refresca solo el indice de busqueda (productos_fuente), sin historico de precios.",
+    )
+    parser.add_argument(
         "--max-por-categoria",
         type=int,
         default=MAX_POR_CATEGORIA,
         help=f"Máximo de productos por categoría (default: {MAX_POR_CATEGORIA}, 0=sin límite).",
     )
     args = parser.parse_args()
+
+    global GUARDAR_CAPTURAS
+    if args.solo_catalogo:
+        GUARDAR_CAPTURAS = False
 
     retailers_a_correr = (
         {args.retailer: RETAILERS_VTEX[args.retailer]}

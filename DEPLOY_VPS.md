@@ -16,7 +16,7 @@ Archivos ya listos en `C:\KlavePricing\justo-backend`: `Dockerfile`, `requiremen
    (si pide, toca **"create a repository"**).
 3. **Publish repository**: nombre `justo-backend`. Podes dejarlo **publico**: es seguro,
    porque tu clave (`.env`) NO se sube (esta en `.gitignore`) y no hay otras credenciales
-   en el codigo. Copia la URL del repo (ej: `https://github.com/TU_USUARIO/justo-backend.git`).
+   en el codigo. Copia la URL del repo (ya quedo: `https://github.com/MauroPascale99/justo-backend.git`).
 
 > Si preferis repo privado, avisame y te paso la variante con token (un paso extra).
 
@@ -46,7 +46,7 @@ En el panel del VPS, boton **"View Console"** (Vultr) o **"Connect using browser
 ## Paso 4 - Pegar el instalador (editas 2 lineas)
 
 1. Abri `setup_vps.sh` (esta en tu carpeta) y reemplaza:
-   - `REPO_URL=` -> la URL de tu repo del Paso 1.
+   - `REPO_URL=` -> ya viene cargada (`https://github.com/MauroPascale99/justo-backend.git`).
    - `DATABASE_URL=` -> el valor de `DATABASE_URL` de tu `.env`
      (`C:\KlavePricing\justo-backend\.env`).
 2. Copia **todo** el contenido del archivo y **pegalo** en la consola del navegador. Enter.
