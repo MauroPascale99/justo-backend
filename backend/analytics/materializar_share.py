@@ -48,7 +48,7 @@ BASE_CTE = """
 with obs as (
     select o.retailer,
            o.dedup_key,
-           coalesce(o.marca, '(sin marca)')  as marca,
+           upper(trim(coalesce(o.marca, '(sin marca)'))) as marca,
            lower(coalesce(o.marca, ''))      as marca_norm,
            o.ean,
            o.in_stock,

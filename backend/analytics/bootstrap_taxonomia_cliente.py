@@ -49,24 +49,40 @@ SINONIMOS_CATEGORIA = {
     "perfumeria": "Perfumería y cuidado personal",
 }
 
-# Sinonimos de nivel-2 (subcategoria, normalizado) -> subcategoria canonica.
-# Colapsa los nombres casi-duplicados que usa cada retail. Si un nivel-2 no esta
-# aca, se usa tal cual (Title Case).
-SINONIMOS_SUBCATEGORIA = {
-    "cuidado de la ropa": "Lavado y cuidado de ropa",
-    "cuidado para la ropa": "Lavado y cuidado de ropa",
-    "limpieza de la ropa": "Lavado y cuidado de ropa",
-    "suavizantes": "Lavado y cuidado de ropa",
-    "perfume para la ropa y aprestos": "Lavado y cuidado de ropa",
-    "lavado de ropa": "Lavado y cuidado de ropa",
-    "limpieza de bano": "Limpieza de baño",
-    "desinfectantes de bano": "Limpieza de baño",
-    "limpieza de cocina": "Limpieza de cocina",
-    "limpiadores": "Multiuso y desinfectantes",
-    "desinfectantes y multiuso": "Multiuso y desinfectantes",
-    "limpieza de pisos y muebles": "Pisos y muebles",
-    "lustramuebles y limpia metales": "Pisos y muebles",
-    "jabones": "Jabones",
+# Sinonimos de TIPO de producto (nivel-3 del path, normalizado) -> subcategoria
+# canonica. El nivel-3 del retail ES el tipo de producto (detergente, suavizante,
+# limpiador, etc.), que es el eje util para share. Si un nivel-3 no esta aca, se
+# usa tal cual (Title Case). Si no hay nivel-3, el producto queda solo a nivel
+# categoria (sin subcategoria).
+SINONIMOS_TIPO = {
+    # Ropa
+    "detergente para ropa": "Detergente para ropa",
+    "lavado a mano": "Detergente para ropa",
+    "lavado a maquina": "Detergente para ropa",
+    "suavizantes": "Suavizantes",
+    "suavizantes para la ropa": "Suavizantes",
+    "jabones para la ropa": "Jabón para ropa",
+    "jabon liquido": "Jabón para ropa",
+    "aprestos y blanqueadores": "Aprestos y blanqueadores",
+    "aprestos": "Aprestos y blanqueadores",
+    "aprestos y perfumes": "Aprestos y blanqueadores",
+    # Cocina
+    "detergentes": "Lavavajillas",
+    "detergentes de mano": "Lavavajillas",
+    "limpiadores": "Limpiadores",
+    "limpiadores liquidos": "Limpiadores",
+    "limpiadores de cocina": "Limpiadores",
+    "multiusos": "Limpiadores",
+    "repuestos desinfectantes y multiuso": "Limpiadores",
+    "limpiavidrios": "Limpiavidrios",
+    "limpia vidrios": "Limpiavidrios",
+    # Bano
+    "desinfectantes": "Limpieza de baño",
+    "limpiadores de bano": "Limpieza de baño",
+    # Pisos y muebles
+    "lustramuebles": "Lustramuebles",
+    # Perfumeria / cuidado personal
+    "jabones liquidos": "Jabón de tocador",
 }
 
 
@@ -81,10 +97,11 @@ def canonica_de(lvl1: str) -> str:
     return SINONIMOS_CATEGORIA.get(norm(lvl1), (lvl1 or "Otros").strip().title())
 
 
-def subcat_de(lvl2):
-    if not lvl2:
+def subcat_de(lvl3):
+    """Tipo de producto canonico desde el nivel-3 del path. None si no hay nivel-3."""
+    if not lvl3:
         return None
-    return SINONIMOS_SUBCATEGORIA.get(norm(lvl2), lvl2.strip().title())
+    return SINONIMOS_TIPO.get(norm(lvl3), lvl3.strip().title())
 
 
 def slugify(*parts) -> str:
@@ -166,9 +183,9 @@ def main():
     for retailer, raw in raws:
         partes = [p.strip() for p in raw.split("/") if p.strip()]
         lvl1 = partes[0] if partes else raw
-        lvl2 = partes[1] if len(partes) > 1 else None
+        lvl3 = partes[2] if len(partes) > 2 else None
         categoria = canonica_de(lvl1)
-        subcat = subcat_de(lvl2)
+        subcat = subcat_de(lvl3)   # subcategoria = tipo de producto (nivel-3)
         nodos.add((categoria, None))           # nodo categoria SIEMPRE
         if subcat:
             nodos.add((categoria, subcat))     # nodo subcategoria
