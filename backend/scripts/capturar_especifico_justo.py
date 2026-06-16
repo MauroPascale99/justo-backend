@@ -137,6 +137,36 @@ def upsert_producto(cur, prod: dict, id_fuente: int) -> int:
     return cur.fetchone()[0]
 
 def insertar_captura(cur, prod: dict, id_producto_fuente: int, fecha: str, hora: str) -> bool:
+    # Solo guardamos una captura si CAMBIO algo respecto a la ultima (precio o
+    # disponibilidad). Antes se guardaba una fila por corrida aunque no cambiara
+    # nada (el hash incluia fecha/hora), lo que inflaba la tabla ~15k filas/dia.
+    disp_bool = prod["disponibilidad"] == "disponible"
+
+    def _n(x):
+        try:
+            return None if x is None or x == "" else round(float(x), 2)
+        except Exception:
+            return None
+
+    nueva = (_n(prod["precio_actual"]), _n(prod["precio_regular"]),
+             _n(prod["precio_oferta"]), disp_bool)
+
+    cur.execute("""
+        SELECT precio_actual, precio_regular, precio_oferta, disponibilidad
+        FROM capturas_precio
+        WHERE id_producto_fuente = %s
+        ORDER BY fecha_captura DESC, id_captura DESC
+        LIMIT 1
+    """, (id_producto_fuente,))
+    last = cur.fetchone()
+
+    if last is not None:
+        anterior = (_n(last[0]), _n(last[1]), _n(last[2]), bool(last[3]))
+        if nueva == anterior:
+            return False  # sin cambios -> no se guarda (ahorra espacio)
+
+    es_cambio = last is not None  # habia captura previa distinta -> es un cambio real
+
     hash_base = "|".join([
         prod["retailer"],
         prod.get("id_externo", ""),
@@ -151,23 +181,24 @@ def insertar_captura(cur, prod: dict, id_producto_fuente: int, fecha: str, hora:
 
     cur.execute("SELECT 1 FROM capturas_precio WHERE hash_captura = %s LIMIT 1", (hash_captura,))
     if cur.fetchone():
-        return False # Duplicate
+        return False  # duplicado exacto
 
     cur.execute("""
         INSERT INTO capturas_precio
             (id_producto_fuente, fecha_captura, hora_captura,
              precio_actual, precio_regular, precio_oferta,
              disponibilidad, hash_captura, score_confianza_dato,
-             estado_captura)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 1.0, 'ok')
+             estado_captura, es_cambio_precio)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 1.0, 'ok', %s)
     """, (
         id_producto_fuente,
         fecha, hora,
         prod["precio_actual"],
         prod["precio_regular"],
         prod["precio_oferta"],
-        prod["disponibilidad"] == "disponible",
+        disp_bool,
         hash_captura,
+        es_cambio,
     ))
     return True
 

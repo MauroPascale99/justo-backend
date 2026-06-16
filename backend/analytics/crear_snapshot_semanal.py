@@ -92,7 +92,7 @@ def main():
                    nullif(pf.ean_detectado, ''),
                    pf.marca_original,
                    null,
-                   cp.disponibilidad,
+                   coalesce(pf.disponible, cp.disponibilidad),
                    coalesce(cp.precio_regular, cp.precio_actual),
                    coalesce(nullif(pf.ean_detectado, ''),
                             'url:' || coalesce(pf.url_producto, pf.id_producto_fuente::text))

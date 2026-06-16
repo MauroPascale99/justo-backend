@@ -1,0 +1,12 @@
+-- ============================================================================
+-- Analytics - Disponibilidad en el catalogo (ADITIVO)
+-- ----------------------------------------------------------------------------
+-- Agrega productos_fuente.disponible (boolean, nullable). La escribe la corrida
+-- semanal del catalogo (el scraper ya calcula IsAvailable; antes lo descartaba).
+-- El snapshot y el share filtran a disponible = true para que el denominador sea
+-- "lo que esta realmente en gondola". Nullable: no rompe nada existente.
+--
+-- DOWN (reversible):
+--   alter table productos_fuente drop column if exists disponible;
+-- ============================================================================
+alter table productos_fuente add column if not exists disponible boolean;

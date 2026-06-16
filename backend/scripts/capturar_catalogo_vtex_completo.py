@@ -279,14 +279,15 @@ def upsert_producto(cur, prod: dict, id_fuente: int) -> tuple[int, str]:
     cur.execute("""
         INSERT INTO productos_fuente
             (id_fuente, retailer, nombre_original, url_producto, url_imagen,
-             categoria_original, ean_detectado, marca_original)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+             categoria_original, ean_detectado, marca_original, disponible)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         ON CONFLICT (id_fuente, url_producto) DO UPDATE SET
             nombre_original   = EXCLUDED.nombre_original,
             url_imagen        = EXCLUDED.url_imagen,
             categoria_original= EXCLUDED.categoria_original,
             ean_detectado     = COALESCE(EXCLUDED.ean_detectado, productos_fuente.ean_detectado),
             marca_original    = COALESCE(EXCLUDED.marca_original, productos_fuente.marca_original),
+            disponible        = EXCLUDED.disponible,
             ultima_vez_visto  = now()
         RETURNING id_producto_fuente, (xmax = 0) as es_nuevo
     """, (
@@ -298,6 +299,8 @@ def upsert_producto(cur, prod: dict, id_fuente: int) -> tuple[int, str]:
         prod["categoria_original"],
         prod["ean_detectado"] or None,
         prod["marca_original"] or None,
+        (True if prod["disponibilidad"] == "disponible"
+         else False if prod["disponibilidad"] == "sin_stock" else None),
     ))
     row = cur.fetchone()
     return row[0], ("insertado" if row[1] else "actualizado")
@@ -364,17 +367,21 @@ def guardar_batch(productos: list[dict], retailer: str,
             if not prod["nombre_original"]:
                 continue
             url = prod["url_producto"] or f"sin-url-{prod['id_externo']}"
+            # disponibilidad -> boolean para analytics (None si desconocida)
+            disp_bool = (True if prod["disponibilidad"] == "disponible"
+                         else False if prod["disponibilidad"] == "sin_stock" else None)
             dedup[url] = (
                 id_fuente, prod["retailer"], prod["nombre_original"], url,
                 prod["url_imagen"], prod["categoria_original"],
                 prod["ean_detectado"] or None, prod["marca_original"] or None,
+                disp_bool,
             )
         rows = list(dedup.values())
         if rows:
             execute_values(cur, """
                 INSERT INTO productos_fuente
                     (id_fuente, retailer, nombre_original, url_producto, url_imagen,
-                     categoria_original, ean_detectado, marca_original)
+                     categoria_original, ean_detectado, marca_original, disponible)
                 VALUES %s
                 ON CONFLICT (id_fuente, url_producto) DO UPDATE SET
                     nombre_original    = EXCLUDED.nombre_original,
@@ -382,6 +389,7 @@ def guardar_batch(productos: list[dict], retailer: str,
                     categoria_original = EXCLUDED.categoria_original,
                     ean_detectado      = COALESCE(EXCLUDED.ean_detectado, productos_fuente.ean_detectado),
                     marca_original     = COALESCE(EXCLUDED.marca_original, productos_fuente.marca_original),
+                    disponible         = EXCLUDED.disponible,
                     ultima_vez_visto   = now()
             """, rows, page_size=500)
             conn.commit()

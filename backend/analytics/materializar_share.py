@@ -64,6 +64,7 @@ with obs as (
     join an_canonical_category cc
       on cc.id = m.canonical_category_id and cc.id_cliente = %(cli)s
     where o.snapshot_id = %(snap)s
+      and o.in_stock is true   -- solo lo que esta en gondola (disponibilidad real)
 ),
 own_ean as (
     select distinct ean from productos_cliente
