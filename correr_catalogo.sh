@@ -23,4 +23,9 @@ if [ "${ANALYTICS_SNAPSHOT:-1}" = "1" ]; then
   echo "----- Analytics: materializar share -----"
   python3 backend/analytics/materializar_share.py || echo "[WARN] materializacion fallo, sigo sin romper nada"
   echo "[exit=$?]"
+
+  echo ""
+  echo "----- Descubrimiento: SKU nuevo + candidatos -----"
+  python3 backend/analytics/detectar_descubrimientos.py || echo "[WARN] descubrimiento fallo, sigo sin romper nada"
+  echo "[exit=$?]"
 fi
