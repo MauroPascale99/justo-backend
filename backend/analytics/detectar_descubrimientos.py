@@ -168,7 +168,7 @@ def main():
                 if total_cand > 0:
                     top = ", ".join(f"{s} ({n})" for s, n in filas[:4])
                     msg = (f"Hay {total_cand} SKUs de la competencia sin vigilar en tus subcategorías: "
-                           f"{top}. Mapealos para no perderlos de vista.")
+                           f"{top}. Tocá para verlos por producto y asignarlos.")
                     if insertar_alerta(cur, cli, "candidato", msg):
                         total_alertas += 1
 
