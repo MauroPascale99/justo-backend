@@ -18,6 +18,7 @@ paso () {
 paso "Captura dirigida (precios clientes + competidores)" backend/scripts/capturar_especifico_justo.py
 paso "Postproceso + Supabase" backend/scripts/robot_maestro_universal.py --solo-postproceso
 paso "Motor de eventos y alertas" backend/scripts/motor_eventos_precio.py
+paso "Foto comercial diaria (intel)" backend/analytics/foto_comercial_diaria.py
 paso "Purga de historico (retencion)" backend/analytics/purgar_historico.py
 
 echo ""
