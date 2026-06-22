@@ -11,7 +11,9 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.dirname(os.path.dir
 RETAILERS_VTEX = {
     "carrefour": {
         "nombre":   "Carrefour",
-        "base_url": "https://www.carrefour.com.ar",
+        # El storefront www.carrefour.com.ar esta detras de Cloudflare (403 "Just a
+        # moment"). El host backend de VTEX pasa derecho, igual que Dia.
+        "base_url": "https://carrefourar.vtexcommercestable.com.br",
     },
     "jumbo": {
         "nombre":   "Jumbo",
@@ -315,7 +317,7 @@ def buscar_por_ean(base_url: str, ret_key: str, ean: str):
     for url, confiable in endpoints:
         try:
             r = requests.get(url, headers=HEADERS, timeout=12)
-            if r.status_code == 200:
+            if r.status_code in (200, 206):
                 data = r.json()
                 if isinstance(data, list) and data:
                     p = _producto_con_ean(data, ean)
@@ -374,7 +376,7 @@ def main():
             url_kw = f"{base_url}/api/catalog_system/pub/products/search?ft={requests.utils.quote(brand)}&_from=0&_to=49"
             try:
                 r = requests.get(url_kw, headers=HEADERS, timeout=12)
-                if r.status_code == 200:
+                if r.status_code in (200, 206):
                     data = r.json()
                     if isinstance(data, list) and data:
                         for p in data:

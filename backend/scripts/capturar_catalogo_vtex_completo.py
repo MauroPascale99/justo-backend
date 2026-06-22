@@ -37,7 +37,8 @@ load_dotenv()
 RETAILERS_VTEX = {
     "carrefour": {
         "nombre":   "Carrefour",
-        "base_url": "https://www.carrefour.com.ar",
+        # Storefront detras de Cloudflare (403). Host backend VTEX pasa derecho.
+        "base_url": "https://carrefourar.vtexcommercestable.com.br",
     },
     "jumbo": {
         "nombre":   "Jumbo",
