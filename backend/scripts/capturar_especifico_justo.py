@@ -291,6 +291,43 @@ def normalizar_producto_vtex(p: dict, retailer: str, target_ean: str = None) -> 
         "stock":             stock,
     }
 
+def _producto_con_ean(data: list, ean: str):
+    """De una lista de productos VTEX, devuelve el que tiene un SKU con ese EAN exacto."""
+    te = str(ean).strip()
+    for p in data:
+        for it in (p.get("items") or []):
+            if str(it.get("ean", "") or "").strip() == te:
+                return p
+    return None
+
+def buscar_por_ean(base_url: str, ret_key: str, ean: str):
+    """Busca un producto por EAN probando dos endpoints VTEX:
+      1) fq=alternateIds_Ean:<ean>  (cuando el EAN esta indexado como alt id)
+      2) ft=<ean>                   (full-text; muchas tiendas resuelven el EAN asi)
+    El fallback ft es clave: en varias tiendas (p.ej. Carrefour) alternateIds_Ean
+    no devuelve nada y, sin esto, los productos solo se capturaban en el catalogo
+    semanal y nunca en el scrapeo dirigido diario.
+    Para ft se exige match EXACTO de EAN para no traer productos equivocados."""
+    endpoints = [
+        (f"{base_url}/api/catalog_system/pub/products/search?fq=alternateIds_Ean:{ean}", True),
+        (f"{base_url}/api/catalog_system/pub/products/search?ft={ean}", False),
+    ]
+    for url, confiable in endpoints:
+        try:
+            r = requests.get(url, headers=HEADERS, timeout=12)
+            if r.status_code == 200:
+                data = r.json()
+                if isinstance(data, list) and data:
+                    p = _producto_con_ean(data, ean)
+                    if p is None and confiable:
+                        p = data[0]  # alternateIds_Ean ya filtra por EAN: confiamos en el 1ro
+                    if p is not None:
+                        return normalizar_producto_vtex(p, ret_key, target_ean=ean)
+        except Exception as e:
+            print(f"  Error buscando EAN {ean} en {ret_key}: {e}")
+        time.sleep(0.15)
+    return None
+
 def main():
     print("Iniciando captura dirigida JUSTO (productos de clientes + competidores)...")
     load_dotenv()
@@ -325,21 +362,12 @@ def main():
             
         productos_detectados = []
         
-        # 1. Search by EAN
+        # 1. Search by EAN (alternateIds_Ean + fallback full-text ft=)
         for ean in eans:
-            # We can use alternateIds_Ean
-            url = f"{base_url}/api/catalog_system/pub/products/search?fq=alternateIds_Ean:{ean}"
-            try:
-                r = requests.get(url, headers=HEADERS, timeout=12)
-                if r.status_code == 200:
-                    data = r.json()
-                    if isinstance(data, list) and data:
-                        p_norm = normalizar_producto_vtex(data[0], ret_key, target_ean=ean)
-                        productos_detectados.append(p_norm)
-                        print(f"  Found EAN {ean}: {p_norm['nombre_original']} -> ${p_norm['precio_actual']}")
-                time.sleep(0.2)
-            except Exception as e:
-                print(f"  Error searching EAN {ean} on {ret_key}: {e}")
+            p_norm = buscar_por_ean(base_url, ret_key, ean)
+            if p_norm:
+                productos_detectados.append(p_norm)
+                print(f"  Found EAN {ean}: {p_norm['nombre_original']} -> ${p_norm['precio_actual']}")
                 
         # 2. Search by brand keywords (cliente + competidores) para captar variantes
         for brand in brands:
