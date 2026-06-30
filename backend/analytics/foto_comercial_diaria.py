@@ -53,21 +53,26 @@ with mias as (
 ),
 mi_agg as (
     select id_producto_cliente,
-           round(avg(reg)::numeric, 2) as mi_precio_reg,
+           round(avg(reg) filter (where disponible is not false)::numeric, 2) as mi_precio_reg,
            count(*) filter (where disponible is not false and reg is not null) as disponible_en
     from mias group by 1
 ),
-comps as (
-    select m.id_producto_cliente,
-           v.precio_regular as reg,
-           coalesce(v.precio_oferta, v.precio_regular, v.precio_actual) as eff,
-           (v.precio_oferta is not null and v.precio_regular is not null
-            and v.precio_oferta < v.precio_regular) as en_oferta
-    from mapa_competitivo_cliente m
-    join productos_fuente pf
-      on pf.ean_detectado = m.ean_competidor and pf.retailer = m.retailer_competidor
+comps_ean as (
+    -- Un competidor = un EAN, promediado entre TODAS las cadenas donde aparece.
+    -- Antes se cruzaba tambien por retailer_competidor, lo que contaba cada
+    -- competidor en una sola cadena y descartaba competidores enteros.
+    select m.id_producto_cliente, m.ean_competidor,
+           avg(v.precio_regular) as reg,
+           avg(coalesce(v.precio_oferta, v.precio_regular, v.precio_actual)) as eff,
+           bool_or(v.precio_oferta is not null and v.precio_regular is not null
+                   and v.precio_oferta < v.precio_regular) as en_oferta
+    from (select distinct id_producto_cliente, ean_competidor
+          from mapa_competitivo_cliente
+          where id_cliente = %(cli)s and activo and ean_competidor is not null) m
+    join productos_fuente pf on pf.ean_detectado = m.ean_competidor
     join v_precios_actuales v on v.id_producto_fuente = pf.id_producto_fuente
-    where m.id_cliente = %(cli)s and m.activo and coalesce(pf.disponible, true) is not false
+    where coalesce(pf.disponible, true) is not false
+    group by m.id_producto_cliente, m.ean_competidor
 ),
 comp_agg as (
     select id_producto_cliente,
@@ -76,7 +81,7 @@ comp_agg as (
            round(min(eff)::numeric, 2) as comp_min_oferta,
            count(*) filter (where reg is not null) as n_comp,
            count(*) filter (where en_oferta) as n_comp_oferta
-    from comps group by 1
+    from comps_ean group by 1
 )
 insert into intel_diaria
     (fecha, id_cliente, id_producto_cliente, ean, mi_precio_reg, comp_precio_reg,

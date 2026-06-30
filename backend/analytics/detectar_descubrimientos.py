@@ -107,7 +107,7 @@ select subcategoria, count(*) n from cand group by subcategoria order by n desc
 """
 
 
-def insertar_alerta(cur, cli, tipo, mensaje):
+def insertar_alerta(cur, cli, tipo, mensaje, ref=None):
     # dedup: no repetir la misma alerta no leida
     cur.execute(
         "select 1 from alertas_cliente where id_cliente=%s and tipo=%s and mensaje=%s and leida=false limit 1",
@@ -116,8 +116,8 @@ def insertar_alerta(cur, cli, tipo, mensaje):
     if cur.fetchone():
         return False
     cur.execute(
-        "insert into alertas_cliente (id_cliente, tipo, mensaje, leida, fecha) values (%s,%s,%s,false,now())",
-        (cli, tipo, mensaje),
+        "insert into alertas_cliente (id_cliente, tipo, mensaje, ref, leida, fecha) values (%s,%s,%s,%s,false,now())",
+        (cli, tipo, mensaje, ref),
     )
     return True
 
@@ -158,7 +158,7 @@ def main():
                 for retailer, marca, nombre, ean, cat, subcat in cur.fetchall():
                     msg = (f"Alta nueva de competencia en {subcat or cat}: {marca} - "
                            f"{(nombre or '')[:70]} ({retailer}). Evaluá si compite con tu producto.")
-                    if insertar_alerta(cur, cli, "sku_nuevo", msg):
+                    if insertar_alerta(cur, cli, "sku_nuevo", msg, ref=ean):
                         total_alertas += 1
 
                 # Candidatos a competidor (resumen por subcategoria)
@@ -170,6 +170,22 @@ def main():
                     msg = (f"Hay {total_cand} SKUs de la competencia sin vigilar en tus subcategorías: "
                            f"{top}. Tocá para verlos por producto y asignarlos.")
                     if insertar_alerta(cur, cli, "candidato", msg):
+                        total_alertas += 1
+
+                # Precios manuales por vencer (<= 5 dias). Un aviso abierto a la vez.
+                cur.execute("""
+                    select count(*), min(vence_en) from precios_manuales
+                    where id_cliente=%(cli)s and activo
+                      and vence_en >= current_date and vence_en <= current_date + 5
+                """, {"cli": cli})
+                vrow = cur.fetchone()
+                vn, vprox = (vrow[0], vrow[1]) if vrow else (0, None)
+                if vn and vn > 0:
+                    cur.execute("select 1 from alertas_cliente where id_cliente=%s and tipo='precio_vence' and leida=false limit 1", (cli,))
+                    if not cur.fetchone():
+                        msg = (f"Tenés {vn} precio(s) cargado(s) a mano por vencer (el más próximo el "
+                               f"{vprox.strftime('%d/%m')}). Re-escanealos para mantener al día 'Otros canales'.")
+                        cur.execute("insert into alertas_cliente (id_cliente, tipo, mensaje, leida, fecha) values (%s,'precio_vence',%s,false,now())", (cli, msg))
                         total_alertas += 1
 
             conn.commit()
