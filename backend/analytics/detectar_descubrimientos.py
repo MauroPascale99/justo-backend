@@ -62,6 +62,7 @@ own_subcats as (
   join an_category_map m on m.id_cliente=%(cli)s and m.activo and m.retailer=pf.retailer and m.categoria_original=pf.categoria_original
   join an_canonical_category cc on cc.id=m.canonical_category_id and cc.id_cliente=%(cli)s
   where pc.id_cliente=%(cli)s and coalesce(pc.activo,true) and pc.ean is not null and cc.subcategoria is not null
+    and lower(trim(pc.marca)) = 'ecovita'  -- solo subcategorias donde juega Ecovita (no las private label)
 )
 select pf.retailer, coalesce(nullif(trim(pf.marca_original),''),'(s/m)') marca,
        pf.nombre_original, pf.ean_detectado, cc.categoria, cc.subcategoria
@@ -89,6 +90,7 @@ own_subcats as (
   join an_category_map m on m.id_cliente=%(cli)s and m.activo and m.retailer=pf.retailer and m.categoria_original=pf.categoria_original
   join an_canonical_category cc on cc.id=m.canonical_category_id and cc.id_cliente=%(cli)s
   where pc.id_cliente=%(cli)s and coalesce(pc.activo,true) and pc.ean is not null and cc.subcategoria is not null
+    and lower(trim(pc.marca)) = 'ecovita'  -- solo subcategorias donde juega Ecovita (no las private label)
 ),
 cand as (
   select distinct on (pf.ean_detectado) pf.ean_detectado, cc.subcategoria
