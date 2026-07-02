@@ -1,4 +1,6 @@
 import os
+import re
+import json
 import time
 import requests
 import hashlib
@@ -330,6 +332,91 @@ def buscar_por_ean(base_url: str, ret_key: str, ean: str):
         time.sleep(0.15)
     return None
 
+# ── LA ANONIMA (plataforma propia, precios por sucursal, EAN en JSON-LD) ────────
+LAANONIMA_BASE = "https://www.laanonima.com.ar"
+
+def _laanonima_jsonld_product(html: str):
+    """Extrae el primer bloque JSON-LD de tipo Product de una ficha."""
+    for m in re.finditer(r'<script[^>]+application/ld\+json[^>]*>(.*?)</script>', html, re.S | re.I):
+        try:
+            data = json.loads(m.group(1).strip())
+        except Exception:
+            continue
+        if isinstance(data, list):
+            candidatos = data
+        elif isinstance(data, dict) and isinstance(data.get("@graph"), list):
+            candidatos = data["@graph"]
+        else:
+            candidatos = [data]
+        for d in candidatos:
+            if isinstance(d, dict) and str(d.get("@type", "")).lower() == "product":
+                return d
+    return None
+
+def _laanonima_normalizar(d: dict) -> dict:
+    offer = d.get("offers") or {}
+    if isinstance(offer, list):
+        offer = offer[0] if offer else {}
+    price = offer.get("price")
+    try:
+        price = float(price) if price not in (None, "") else None
+    except Exception:
+        price = None
+    avail = str(offer.get("availability", "")).lower()
+    disponible = ("instock" in avail) or ("disponible" in avail)
+    brand = d.get("brand")
+    marca = brand.get("name") if isinstance(brand, dict) else (brand or "")
+    img = d.get("image")
+    if isinstance(img, list):
+        img = img[0] if img else ""
+    gtin = str(d.get("gtin") or d.get("gtin13") or d.get("gtin14") or "").strip()
+    return {
+        "retailer":          "laanonima",
+        "id_externo":        str(d.get("sku", "") or gtin or ""),
+        "nombre_original":   str(d.get("name", "") or "").strip(),
+        "marca_original":    str(marca or "").strip(),
+        "categoria_original":"Limpieza",
+        "ean_detectado":     gtin,
+        "url_producto":      str(offer.get("url") or ""),
+        "url_imagen":        str(img or ""),
+        "precio_actual":     price,
+        "precio_regular":    price,
+        "precio_oferta":     None,
+        "disponibilidad":    "disponible" if disponible else "sin_stock",
+        "stock":             None,
+    }
+
+def buscar_laanonima_por_ean(ean: str):
+    """Busca por EAN en La Anonima: /buscar/<ean> -> ficha -> JSON-LD.
+    Exige que el gtin de la ficha coincida con el EAN buscado."""
+    try:
+        r = requests.get(f"{LAANONIMA_BASE}/buscar/{ean}", headers=HEADERS, timeout=15)
+        if r.status_code != 200:
+            return None
+        hrefs = re.findall(r'/[a-z0-9\-]+/art_\d+/', r.text, re.I)
+        seen = set()
+        orden = [h for h in hrefs if not (h in seen or seen.add(h))]
+        for h in orden[:3]:
+            try:
+                rd = requests.get(LAANONIMA_BASE + h, headers=HEADERS, timeout=15)
+                if rd.status_code != 200:
+                    continue
+                d = _laanonima_jsonld_product(rd.text)
+                if not d:
+                    continue
+                prod = _laanonima_normalizar(d)
+                if prod["ean_detectado"] == str(ean).strip():
+                    if not prod["url_producto"]:
+                        prod["url_producto"] = LAANONIMA_BASE + h
+                    return prod
+            except Exception:
+                continue
+            time.sleep(0.15)
+    except Exception as e:
+        print(f"  Error La Anonima EAN {ean}: {e}")
+    return None
+
+
 def main():
     print("Iniciando captura dirigida JUSTO (productos de clientes + competidores)...")
     load_dotenv()
@@ -560,6 +647,38 @@ def main():
         conn.commit()
         print(f"  -> COTO guardado: {ins_cnt} upserts, {cap_cnt} nuevas capturas")
         
+    # ── LA ANONIMA (busqueda dirigida por EAN) ───────────────────────────────
+    print("\nScraping La Anonima (por EAN)...")
+    id_fuente_la = obtener_id_fuente(cur, "laanonima")
+    if id_fuente_la:
+        la_products = []
+        for ean in eans:
+            p = buscar_laanonima_por_ean(ean)
+            if p and p["precio_actual"]:
+                la_products.append(p)
+                print(f"  La Anonima EAN {ean}: {p['nombre_original']} -> ${p['precio_actual']}")
+            time.sleep(0.2)
+        ins_cnt = 0
+        cap_cnt = 0
+        for prod in la_products:
+            try:
+                id_pf = upsert_producto(cur, prod, id_fuente_la)
+                ins_cnt += 1
+                if prod["precio_actual"]:
+                    if insertar_captura(cur, prod, id_pf, fecha, hora):
+                        cap_cnt += 1
+            except Exception as e:
+                print(f"  Error saving La Anonima product {prod.get('nombre_original')}: {e}")
+                conn.rollback()
+        cur.execute("""
+            UPDATE fuentes SET ultima_captura = now(), total_capturas = total_capturas + %s
+            WHERE id_fuente = %s
+        """, (cap_cnt, id_fuente_la))
+        conn.commit()
+        print(f"  -> La Anonima guardado: {ins_cnt} upserts, {cap_cnt} nuevas capturas")
+    else:
+        print("  ERROR: no id_fuente para laanonima")
+
     cur.close()
     conn.close()
     print("\nTargeted scraping completado exitosamente.")
