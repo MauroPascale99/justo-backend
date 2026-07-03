@@ -371,6 +371,18 @@ def buscar_por_ean(base_url: str, ret_key: str, ean: str):
 # ── LA ANONIMA (plataforma propia, precios por sucursal, EAN en JSON-LD) ────────
 LAANONIMA_BASE = "https://www.laanonima.com.ar"
 
+# La Anonima muestra precios SOLO si hay una sucursal / zona de precio elegida
+# (via cookies). Sin esto, una request "limpia" (como la del server) no trae precio.
+# Fijamos una sucursal por defecto: Neuquen (zona de precio 8). Cambiar aca para
+# usar otra sucursal.
+LAANONIMA_COOKIES = {
+    "Id-Sucursal-Super": "22",
+    "idZonaPrecio": "8",
+    "codigoPostal": "8300",
+    "seleccionocp": "1",
+    "tipoEnvioUnificado": "3",
+}
+
 def _laanonima_jsonld_product(html: str):
     """Extrae el primer bloque JSON-LD de tipo Product de una ficha."""
     for m in re.finditer(r'<script[^>]+application/ld\+json[^>]*>(.*?)</script>', html, re.S | re.I):
@@ -426,7 +438,7 @@ def buscar_laanonima_por_ean(ean: str):
     """Busca por EAN en La Anonima: /buscar/<ean> -> ficha -> JSON-LD.
     Exige que el gtin de la ficha coincida con el EAN buscado."""
     try:
-        r = requests.get(f"{LAANONIMA_BASE}/buscar/{ean}", headers=HEADERS, timeout=15)
+        r = requests.get(f"{LAANONIMA_BASE}/buscar/{ean}", headers=HEADERS, cookies=LAANONIMA_COOKIES, timeout=15)
         if r.status_code != 200:
             return None
         hrefs = re.findall(r'/[a-z0-9\-]+/art_\d+/', r.text, re.I)
@@ -434,7 +446,7 @@ def buscar_laanonima_por_ean(ean: str):
         orden = [h for h in hrefs if not (h in seen or seen.add(h))]
         for h in orden[:3]:
             try:
-                rd = requests.get(LAANONIMA_BASE + h, headers=HEADERS, timeout=15)
+                rd = requests.get(LAANONIMA_BASE + h, headers=HEADERS, cookies=LAANONIMA_COOKIES, timeout=15)
                 if rd.status_code != 200:
                     continue
                 d = _laanonima_jsonld_product(rd.text)
