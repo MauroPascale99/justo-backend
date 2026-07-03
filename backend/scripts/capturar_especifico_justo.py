@@ -145,6 +145,8 @@ def insertar_captura(cur, prod: dict, id_producto_fuente: int, fecha: str, hora:
     # disponibilidad). Antes se guardaba una fila por corrida aunque no cambiara
     # nada (el hash incluia fecha/hora), lo que inflaba la tabla ~15k filas/dia.
     disp_bool = prod["disponibilidad"] == "disponible"
+    promo_txt = (prod.get("texto_promocion") or None)
+    tipo_promo = (prod.get("tipo_promocion") or None)
 
     def _n(x):
         try:
@@ -153,10 +155,10 @@ def insertar_captura(cur, prod: dict, id_producto_fuente: int, fecha: str, hora:
             return None
 
     nueva = (_n(prod["precio_actual"]), _n(prod["precio_regular"]),
-             _n(prod["precio_oferta"]), disp_bool)
+             _n(prod["precio_oferta"]), disp_bool, promo_txt)
 
     cur.execute("""
-        SELECT precio_actual, precio_regular, precio_oferta, disponibilidad
+        SELECT precio_actual, precio_regular, precio_oferta, disponibilidad, texto_promocion
         FROM capturas_precio
         WHERE id_producto_fuente = %s
         ORDER BY fecha_captura DESC, id_captura DESC
@@ -165,7 +167,7 @@ def insertar_captura(cur, prod: dict, id_producto_fuente: int, fecha: str, hora:
     last = cur.fetchone()
 
     if last is not None:
-        anterior = (_n(last[0]), _n(last[1]), _n(last[2]), bool(last[3]))
+        anterior = (_n(last[0]), _n(last[1]), _n(last[2]), bool(last[3]), (last[4] or None))
         if nueva == anterior:
             return False  # sin cambios -> no se guarda (ahorra espacio)
 
@@ -192,8 +194,8 @@ def insertar_captura(cur, prod: dict, id_producto_fuente: int, fecha: str, hora:
             (id_producto_fuente, fecha_captura, hora_captura,
              precio_actual, precio_regular, precio_oferta,
              disponibilidad, hash_captura, score_confianza_dato,
-             estado_captura, es_cambio_precio)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 1.0, 'ok', %s)
+             estado_captura, es_cambio_precio, texto_promocion, tipo_promocion)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 1.0, 'ok', %s, %s, %s)
     """, (
         id_producto_fuente,
         fecha, hora,
@@ -203,6 +205,8 @@ def insertar_captura(cur, prod: dict, id_producto_fuente: int, fecha: str, hora:
         disp_bool,
         hash_captura,
         es_cambio,
+        promo_txt,
+        tipo_promo,
     ))
     return True
 
@@ -226,10 +230,40 @@ def _mejor_offer(sellers: list) -> dict:
     pool.sort(key=lambda x: x[0])
     return pool[0][1]
 
+def _limpiar_promo(nombre: str) -> str:
+    """Limpia el Name tecnico de VTEX. Ej:
+    'PROMO-2do al 50%  Max 8 unidades Combinable ECOVITA-Reg-2-50-AS30.6 AL 6.7'
+    -> '2do al 50% Max 8 unidades Combinable ECOVITA'."""
+    if not nombre:
+        return ""
+    s = re.sub(r'^\s*promo[\s\-:_]*', '', nombre, flags=re.I)
+    s = re.sub(r'-\s*Reg-.*$', '', s, flags=re.I)   # corta el sufijo tecnico -Reg-2-50-...
+    s = re.sub(r'\s+', ' ', s).strip(' -_')
+    return s[:120]
+
+def _promo_vtex(offer: dict) -> str:
+    """Mecanica promocional (2x1, 2do al 50%, %off, etc.) desde VTEX. Universal
+    para TODAS las tiendas VTEX (Carrefour, Jumbo, Disco, Vea, ChangoMas, Dia)."""
+    for t in (offer.get("PromotionTeasers") or []):
+        n = _limpiar_promo(str((t or {}).get("Name") or (t or {}).get("name") or ""))
+        if n:
+            return n
+    for t in (offer.get("Teasers") or []):
+        n = _limpiar_promo(str((t or {}).get("name") or (t or {}).get("Name") or ""))
+        if n:
+            return n
+    dh = offer.get("DiscountHighLight") or offer.get("DiscountHighlights")
+    if isinstance(dh, list):
+        for d in dh:
+            n = _limpiar_promo(str((d.get("name") or d.get("Name") or "") if isinstance(d, dict) else d))
+            if n:
+                return n
+    return ""
+
 def extraer_precio_y_stock(item: dict, retailer: str) -> tuple:
     sellers = item.get("sellers") or []
     if not sellers:
-        return None, None, None, None, "sin_seller"
+        return None, None, None, None, "sin_seller", ""
 
     offer = _mejor_offer(sellers)
     precio_actual  = offer.get("Price")
@@ -260,7 +294,7 @@ def extraer_precio_y_stock(item: dict, retailer: str) -> tuple:
     if stock == 0:
         disp = "sin_stock"
 
-    return precio_actual, precio_regular, precio_oferta, stock, disp
+    return precio_actual, precio_regular, precio_oferta, stock, disp, _promo_vtex(offer)
 
 def normalizar_producto_vtex(p: dict, retailer: str, target_ean: str = None) -> dict:
     items = p.get("items") or []
@@ -273,7 +307,7 @@ def normalizar_producto_vtex(p: dict, retailer: str, target_ean: str = None) -> 
                 break
     if item is None:
         item = items[0] if items else {}
-    precio_actual, precio_regular, precio_oferta, stock, disp = extraer_precio_y_stock(item, retailer)
+    precio_actual, precio_regular, precio_oferta, stock, disp, promo = extraer_precio_y_stock(item, retailer)
     categorias = p.get("categories") or []
     categoria  = str(categorias[0]).strip("/") if categorias else "Limpieza"
     images    = item.get("images") or []
@@ -293,6 +327,8 @@ def normalizar_producto_vtex(p: dict, retailer: str, target_ean: str = None) -> 
         "precio_oferta":     precio_oferta,
         "disponibilidad":    disp,
         "stock":             stock,
+        "texto_promocion":   promo or None,
+        "tipo_promocion":    "mecanica" if promo else None,
     }
 
 def _producto_con_ean(data: list, ean: str):

@@ -24,6 +24,7 @@ Requisitos:
 import argparse
 import hashlib
 import os
+import re
 import time
 import traceback
 from datetime import datetime
@@ -175,10 +176,37 @@ def obtener_productos_categoria(base_url: str, categoria_path: str,
     return productos
 
 
+def _limpiar_promo(nombre: str) -> str:
+    if not nombre:
+        return ""
+    s = re.sub(r'^\s*promo[\s\-:_]*', '', nombre, flags=re.I)
+    s = re.sub(r'-\s*Reg-.*$', '', s, flags=re.I)
+    s = re.sub(r'\s+', ' ', s).strip(' -_')
+    return s[:120]
+
+def _promo_vtex(offer: dict) -> str:
+    """Mecanica promocional (2x1, 2do al 50%, %off) desde VTEX. Universal a todas
+    las tiendas VTEX (Carrefour, Jumbo, Disco, Vea, ChangoMas, Dia)."""
+    for t in (offer.get("PromotionTeasers") or []):
+        n = _limpiar_promo(str((t or {}).get("Name") or (t or {}).get("name") or ""))
+        if n:
+            return n
+    for t in (offer.get("Teasers") or []):
+        n = _limpiar_promo(str((t or {}).get("name") or (t or {}).get("Name") or ""))
+        if n:
+            return n
+    dh = offer.get("DiscountHighLight") or offer.get("DiscountHighlights")
+    if isinstance(dh, list):
+        for d in dh:
+            n = _limpiar_promo(str((d.get("name") or d.get("Name") or "") if isinstance(d, dict) else d))
+            if n:
+                return n
+    return ""
+
 def extraer_precio_y_stock(item: dict, retailer: str) -> tuple:
     sellers = item.get("sellers") or []
     if not sellers:
-        return None, None, None, None, "sin_seller"
+        return None, None, None, None, "sin_seller", ""
 
     offer = (sellers[0].get("commertialOffer") or {})
 
@@ -216,14 +244,14 @@ def extraer_precio_y_stock(item: dict, retailer: str) -> tuple:
     if stock == 0:
         disp = "sin_stock"
 
-    return precio_actual, precio_regular, precio_oferta, stock, disp
+    return precio_actual, precio_regular, precio_oferta, stock, disp, _promo_vtex(offer)
 
 
 def normalizar_producto(p: dict, retailer: str) -> dict:
     items = p.get("items") or []
     item  = items[0] if items else {}
 
-    precio_actual, precio_regular, precio_oferta, stock, disp = extraer_precio_y_stock(item, retailer)
+    precio_actual, precio_regular, precio_oferta, stock, disp, promo = extraer_precio_y_stock(item, retailer)
 
     categorias = p.get("categories") or []
     categoria  = str(categorias[0]).strip("/") if categorias else ""
@@ -245,6 +273,8 @@ def normalizar_producto(p: dict, retailer: str) -> dict:
         "precio_oferta":     precio_oferta,
         "disponibilidad":    disp,
         "stock":             stock,
+        "texto_promocion":   promo or None,
+        "tipo_promocion":    "mecanica" if promo else None,
     }
 
 
@@ -327,8 +357,8 @@ def insertar_captura(cur, prod: dict, id_producto_fuente: int,
                 (id_producto_fuente, fecha_captura, hora_captura,
                  precio_actual, precio_regular, precio_oferta,
                  disponibilidad, hash_captura, score_confianza_dato,
-                 estado_captura)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                 estado_captura, texto_promocion, tipo_promocion)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             ON CONFLICT (hash_captura) DO NOTHING
         """, (
             id_producto_fuente,
@@ -340,6 +370,8 @@ def insertar_captura(cur, prod: dict, id_producto_fuente: int,
             hash_captura,
             1.0,
             "ok",
+            prod.get("texto_promocion"),
+            prod.get("tipo_promocion"),
         ))
         return cur.rowcount > 0
     except Exception as e:
