@@ -383,6 +383,24 @@ LAANONIMA_COOKIES = {
     "tipoEnvioUnificado": "3",
 }
 
+# Proxy residencial SOLO para La Anonima: su CDN (CloudFront) bloquea las IPs de
+# datacenter (el server da 403). Configurar en .env:
+#   LAANONIMA_PROXY=http://usuario:contrasena@host:puerto
+LAANONIMA_PROXY = os.environ.get("LAANONIMA_PROXY")
+LAANONIMA_PROXIES = {"http": LAANONIMA_PROXY, "https": LAANONIMA_PROXY} if LAANONIMA_PROXY else None
+
+# La Anonima (CloudFront) exige headers de navegador completos ademas de la IP
+# residencial: con un User-Agent minimo devuelve 403 igual.
+LAANONIMA_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    "Accept-Language": "es-AR,es;q=0.9",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Upgrade-Insecure-Requests": "1",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "none",
+}
+
 def _laanonima_jsonld_product(html: str):
     """Extrae el primer bloque JSON-LD de tipo Product de una ficha."""
     for m in re.finditer(r'<script[^>]+application/ld\+json[^>]*>(.*?)</script>', html, re.S | re.I):
@@ -438,7 +456,7 @@ def buscar_laanonima_por_ean(ean: str):
     """Busca por EAN en La Anonima: /buscar/<ean> -> ficha -> JSON-LD.
     Exige que el gtin de la ficha coincida con el EAN buscado."""
     try:
-        r = requests.get(f"{LAANONIMA_BASE}/buscar/{ean}", headers=HEADERS, cookies=LAANONIMA_COOKIES, timeout=15)
+        r = requests.get(f"{LAANONIMA_BASE}/buscar/{ean}", headers=LAANONIMA_HEADERS, cookies=LAANONIMA_COOKIES, proxies=LAANONIMA_PROXIES, timeout=25)
         if r.status_code != 200:
             return None
         hrefs = re.findall(r'/[a-z0-9\-]+/art_\d+/', r.text, re.I)
@@ -446,7 +464,7 @@ def buscar_laanonima_por_ean(ean: str):
         orden = [h for h in hrefs if not (h in seen or seen.add(h))]
         for h in orden[:3]:
             try:
-                rd = requests.get(LAANONIMA_BASE + h, headers=HEADERS, cookies=LAANONIMA_COOKIES, timeout=15)
+                rd = requests.get(LAANONIMA_BASE + h, headers=LAANONIMA_HEADERS, cookies=LAANONIMA_COOKIES, proxies=LAANONIMA_PROXIES, timeout=25)
                 if rd.status_code != 200:
                     continue
                 d = _laanonima_jsonld_product(rd.text)
@@ -695,9 +713,19 @@ def main():
         conn.commit()
         print(f"  -> COTO guardado: {ins_cnt} upserts, {cap_cnt} nuevas capturas")
         
-    # ── LA ANONIMA (busqueda dirigida por EAN) ───────────────────────────────
-    print("\nScraping La Anonima (por EAN)...")
+    # ── LA ANONIMA (via proxy residencial; corre Lun/Mie/Vie para ahorrar) ────
+    # Su CDN bloquea la IP del server, asi que va SOLO por proxy y pocas veces por
+    # semana. Forzar cualquier dia con LAANONIMA_FORZAR=1.
+    _correr_la = (datetime.now().weekday() in (0, 2, 4)) or (os.environ.get("LAANONIMA_FORZAR") == "1")
     id_fuente_la = obtener_id_fuente(cur, "laanonima")
+    if not _correr_la:
+        print("\nLa Anonima: se saltea hoy (corre Lun/Mie/Vie). Forzar con LAANONIMA_FORZAR=1.")
+        id_fuente_la = None
+    elif not LAANONIMA_PROXY:
+        print("\nLa Anonima: falta LAANONIMA_PROXY en el .env (el CDN bloquea la IP del server). Se saltea.")
+        id_fuente_la = None
+    else:
+        print("\nScraping La Anonima (por EAN, via proxy)...")
     if id_fuente_la:
         la_products = []
         for ean in eans:
