@@ -33,10 +33,13 @@ chmod 600 /opt/justo/.env
 echo ">> [5/6] Construyendo imagen Docker (tarda unos minutos)"
 docker build -t justo-robots /opt/justo
 
-echo ">> [6/6] Programando corrida diaria 10:00 (hora Argentina)"
+echo ">> [6/6] Programando corridas diarias (hora Argentina)"
 cat > /etc/cron.d/justo-robots <<CRON
 CRON_TZ=America/Argentina/Buenos_Aires
 0 10 * * * root cd /opt/justo && /usr/bin/docker run --rm --env-file /opt/justo/.env justo-robots >> /var/log/justo-robots.log 2>&1
+# El padrón de sucursales se actualiza fuera de la captura de precios. La tarea
+# es incremental y no re-geocodifica direcciones que ya estén completas.
+30 2 * * * root cd /opt/justo && /usr/bin/docker run --rm --env-file /opt/justo/.env justo-robots python3 backend/scripts/sincronizar_sucursales_retailers.py --retailer coto >> /var/log/justo-sucursales.log 2>&1
 CRON
 chmod 0644 /etc/cron.d/justo-robots
 systemctl restart cron || service cron restart || true
