@@ -29,6 +29,11 @@ from dotenv import load_dotenv
 
 FUENTE_COTO = "https://www.coto.com.ar/sucursales/"
 FUENTE_CARREFOUR = "https://comerciante.carrefour.com.ar/sucursales"
+FUENTES_CENCOSUD = {
+    "vea": "https://www.vea.com.ar/api/dataentities/NT/search",
+    "jumbo": "https://www.jumbo.com.ar/api/dataentities/NT/search",
+    "disco": "https://www.disco.com.ar/api/dataentities/NT/search",
+}
 NOMINATIM = "https://nominatim.openstreetmap.org/search"
 USER_AGENT = "JustoAR-Sucursales/1.0 (contacto@ecom360.ar)"
 
@@ -42,6 +47,8 @@ class Sucursal:
     localidad: str
     provincia: str
     fuente_url: str
+    latitud: float | None = None
+    longitud: float | None = None
 
 
 class LectorFilasHTML(HTMLParser):
@@ -118,6 +125,39 @@ def cargar_carrefour() -> list[Sucursal]:
     return sucursales
 
 
+def cargar_cencosud(retailer: str) -> list[Sucursal]:
+    """Carga tiendas y coordenadas que Cencosud publica en cada localizador."""
+    fuente = FUENTES_CENCOSUD[retailer]
+    campos = "name,geocoordinates,SellerName,id,country,city,neighborhood,number,postalCode,state,street,address,phone"
+    respuesta = requests.get(
+        fuente,
+        params={"_fields": campos, "_where": "isActive=true", "_sort": "name ASC"},
+        headers={"User-Agent": USER_AGENT, "REST-Range": "resources=0-999"},
+        timeout=60,
+    )
+    respuesta.raise_for_status()
+    sucursales: list[Sucursal] = []
+    for fila in respuesta.json():
+        nombre = str(fila.get("name") or "").strip()
+        direccion = str(fila.get("address") or "").strip()
+        codigo = str(fila.get("id") or fila.get("SellerName") or "").strip()
+        coordenadas = str(fila.get("geocoordinates") or "").split(",")
+        try:
+            latitud, longitud = float(coordenadas[0].strip()), float(coordenadas[1].strip())
+        except (ValueError, IndexError):
+            latitud = longitud = None
+        if not nombre or not direccion or not codigo:
+            continue
+        sucursales.append(Sucursal(
+            retailer, codigo, nombre, direccion,
+            str(fila.get("city") or fila.get("neighborhood") or "").strip(),
+            str(fila.get("state") or "").strip(), fuente, latitud, longitud,
+        ))
+    if not sucursales:
+        raise RuntimeError(f"No se encontraron sucursales activas de {retailer}.")
+    return sucursales
+
+
 def upsertar(conn, sucursales: Iterable[Sucursal]) -> int:
     filas = list(sucursales)
     with conn.cursor() as cur:
@@ -125,18 +165,20 @@ def upsertar(conn, sucursales: Iterable[Sucursal]) -> int:
             cur.execute(
                 """
                 INSERT INTO public.sucursales_retailer
-                    (retailer, codigo_externo, nombre, direccion, localidad, provincia, fuente_url, verificado_en, activa)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, now(), true)
+                    (retailer, codigo_externo, nombre, direccion, localidad, provincia, fuente_url, latitud, longitud, verificado_en, activa)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, now(), true)
                 ON CONFLICT (retailer, direccion, localidad) DO UPDATE SET
                     codigo_externo = EXCLUDED.codigo_externo,
                     nombre = EXCLUDED.nombre,
                     provincia = EXCLUDED.provincia,
                     fuente_url = EXCLUDED.fuente_url,
+                    latitud = COALESCE(EXCLUDED.latitud, public.sucursales_retailer.latitud),
+                    longitud = COALESCE(EXCLUDED.longitud, public.sucursales_retailer.longitud),
                     verificado_en = now(),
                     activa = true,
                     actualizado_en = now()
                 """,
-                (item.retailer, item.codigo_externo, item.nombre, item.direccion, item.localidad, item.provincia, item.fuente_url),
+                (item.retailer, item.codigo_externo, item.nombre, item.direccion, item.localidad, item.provincia, item.fuente_url, item.latitud, item.longitud),
             )
     conn.commit()
     return len(filas)
@@ -185,7 +227,7 @@ def geocodificar_pendientes(conn, retailer: str, limite: int) -> tuple[int, int]
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--retailer", choices=["coto", "carrefour"], default="coto")
+    parser.add_argument("--retailer", choices=["coto", "carrefour", "vea", "jumbo", "disco"], default="coto")
     parser.add_argument("--sin-geocodificar", action="store_true")
     parser.add_argument("--max-geocodificar", type=int, default=200)
     args = parser.parse_args()
@@ -197,8 +239,8 @@ def main() -> int:
     conn = psycopg2.connect(url)
     try:
         cargadores = {"coto": cargar_coto, "carrefour": cargar_carrefour}
-        filas = cargadores[args.retailer]()
-        etiqueta = args.retailer.title()
+        filas = cargadores[args.retailer]() if args.retailer in cargadores else cargar_cencosud(args.retailer)
+        etiqueta = {"vea": "Vea", "jumbo": "Jumbo", "disco": "Disco"}.get(args.retailer, args.retailer.title())
         print(f"{etiqueta}: {upsertar(conn, filas)} sucursales oficiales sincronizadas.")
         if not args.sin_geocodificar:
             ok, total = geocodificar_pendientes(conn, args.retailer, args.max_geocodificar)
