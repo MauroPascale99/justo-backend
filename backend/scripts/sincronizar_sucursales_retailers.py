@@ -19,6 +19,7 @@ import re
 import sys
 import time
 from dataclasses import dataclass
+from html.parser import HTMLParser
 from typing import Iterable
 
 import psycopg2
@@ -27,6 +28,7 @@ from dotenv import load_dotenv
 
 
 FUENTE_COTO = "https://www.coto.com.ar/sucursales/"
+FUENTE_CARREFOUR = "https://comerciante.carrefour.com.ar/sucursales"
 NOMINATIM = "https://nominatim.openstreetmap.org/search"
 USER_AGENT = "JustoAR-Sucursales/1.0 (contacto@ecom360.ar)"
 
@@ -40,6 +42,35 @@ class Sucursal:
     localidad: str
     provincia: str
     fuente_url: str
+
+
+class LectorFilasHTML(HTMLParser):
+    """Lector mínimo para directorios HTML tabulares, sin dependencia extra."""
+    def __init__(self) -> None:
+        super().__init__()
+        self.filas: list[list[str]] = []
+        self._fila: list[str] | None = None
+        self._celda: list[str] | None = None
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag == "tr":
+            self._fila = []
+        elif tag in {"td", "th"} and self._fila is not None:
+            self._celda = []
+
+    def handle_data(self, data: str) -> None:
+        if self._celda is not None:
+            self._celda.append(data)
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag in {"td", "th"} and self._fila is not None and self._celda is not None:
+            texto = re.sub(r"\s+", " ", "".join(self._celda)).strip()
+            self._fila.append(texto)
+            self._celda = None
+        elif tag == "tr" and self._fila is not None:
+            if self._fila:
+                self.filas.append(self._fila)
+            self._fila = None
 
 
 def cargar_coto() -> list[Sucursal]:
@@ -63,6 +94,27 @@ def cargar_coto() -> list[Sucursal]:
             # de las filas. Conservamos la dirección original sin inventar datos.
             localidad = direccion.rsplit(" - ", 1)[-1].strip() if " - " in direccion else provincia
             sucursales.append(Sucursal("coto", codigo, nombre, direccion, localidad, provincia, FUENTE_COTO))
+    return sucursales
+
+
+def cargar_carrefour() -> list[Sucursal]:
+    """Extrae tiendas del listado oficial de Carrefour para comerciantes."""
+    respuesta = requests.get(FUENTE_CARREFOUR, headers={"User-Agent": USER_AGENT}, timeout=60)
+    respuesta.raise_for_status()
+    lector = LectorFilasHTML()
+    lector.feed(respuesta.text)
+    sucursales: list[Sucursal] = []
+    for indice, fila in enumerate(lector.filas):
+        if len(fila) < 2:
+            continue
+        nombre, direccion = fila[0].strip(), fila[1].strip()
+        if not nombre or not direccion or "nombre tienda" in nombre.lower() or "direcci" in direccion.lower():
+            continue
+        # El directorio no siempre discrimina localidad. Nombre y dirección se
+        # conservan textualmente; el geocodificador recibe ambos para resolverla.
+        sucursales.append(Sucursal("carrefour", str(indice), nombre, direccion, "", "", FUENTE_CARREFOUR))
+    if not sucursales:
+        raise RuntimeError("No se encontraron filas de sucursales en Carrefour.")
     return sucursales
 
 
@@ -94,7 +146,7 @@ def geocodificar_pendientes(conn, retailer: str, limite: int) -> tuple[int, int]
     with conn.cursor() as cur:
         cur.execute(
             """
-            SELECT id_sucursal, direccion, localidad, provincia
+            SELECT id_sucursal, nombre, direccion, localidad, provincia
             FROM public.sucursales_retailer
             WHERE retailer = %s AND activa AND (latitud IS NULL OR longitud IS NULL)
             ORDER BY id_sucursal
@@ -105,8 +157,8 @@ def geocodificar_pendientes(conn, retailer: str, limite: int) -> tuple[int, int]
         pendientes = cur.fetchall()
 
     actualizadas = 0
-    for indice, (id_sucursal, direccion, localidad, provincia) in enumerate(pendientes):
-        consulta = ", ".join(x for x in (direccion, localidad, provincia, "Argentina") if x)
+    for indice, (id_sucursal, nombre, direccion, localidad, provincia) in enumerate(pendientes):
+        consulta = ", ".join(x for x in (direccion, localidad, provincia, nombre, "Argentina") if x)
         try:
             respuesta = requests.get(
                 NOMINATIM,
@@ -133,7 +185,7 @@ def geocodificar_pendientes(conn, retailer: str, limite: int) -> tuple[int, int]
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--retailer", choices=["coto"], default="coto")
+    parser.add_argument("--retailer", choices=["coto", "carrefour"], default="coto")
     parser.add_argument("--sin-geocodificar", action="store_true")
     parser.add_argument("--max-geocodificar", type=int, default=200)
     args = parser.parse_args()
@@ -144,11 +196,13 @@ def main() -> int:
         raise RuntimeError("DATABASE_URL no encontrada en el entorno.")
     conn = psycopg2.connect(url)
     try:
-        filas = cargar_coto()
-        print(f"Coto: {upsertar(conn, filas)} sucursales oficiales sincronizadas.")
+        cargadores = {"coto": cargar_coto, "carrefour": cargar_carrefour}
+        filas = cargadores[args.retailer]()
+        etiqueta = args.retailer.title()
+        print(f"{etiqueta}: {upsertar(conn, filas)} sucursales oficiales sincronizadas.")
         if not args.sin_geocodificar:
             ok, total = geocodificar_pendientes(conn, args.retailer, args.max_geocodificar)
-            print(f"Coto: {ok}/{total} coordenadas completadas en esta corrida.")
+            print(f"{etiqueta}: {ok}/{total} coordenadas completadas en esta corrida.")
     finally:
         conn.close()
     return 0

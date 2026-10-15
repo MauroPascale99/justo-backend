@@ -40,6 +40,7 @@ CRON_TZ=America/Argentina/Buenos_Aires
 # El padrón de sucursales se actualiza fuera de la captura de precios. La tarea
 # es incremental y no re-geocodifica direcciones que ya estén completas.
 30 2 * * * root cd /opt/justo && /usr/bin/docker run --rm --env-file /opt/justo/.env justo-robots python3 backend/scripts/sincronizar_sucursales_retailers.py --retailer coto >> /var/log/justo-sucursales.log 2>&1
+45 2 * * * root cd /opt/justo && /usr/bin/docker run --rm --env-file /opt/justo/.env justo-robots python3 backend/scripts/sincronizar_sucursales_retailers.py --retailer carrefour >> /var/log/justo-sucursales.log 2>&1
 CRON
 chmod 0644 /etc/cron.d/justo-robots
 systemctl restart cron || service cron restart || true
