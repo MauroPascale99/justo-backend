@@ -38,10 +38,21 @@ def latest(data: list[dict[str, str]], field: str) -> list[dict[str, str]]:
     return [row for row in data if row.get(field, '') == max(values)] if values else data
 
 
-def add(bucket: dict[tuple[str, str], dict[str, Any]], chain: str, code: str, name: str, banner: str, sale: float, stock: float, sku: str, sku_sale: float, sku_stock: float, repo: bool | None = None) -> None:
+def fecha_corte(periodo: str | None) -> str | None:
+    texto = (periodo or '').strip()
+    if not texto: return None
+    candidato = texto[:10]
+    for patron in ('%Y-%m-%d', '%d/%m/%Y'):
+        try: return datetime.strptime(candidato, patron).date().isoformat()
+        except ValueError: pass
+    return None
+
+
+def add(bucket: dict[tuple[str, str], dict[str, Any]], chain: str, code: str, name: str, banner: str, sale: float, stock: float, sku: str, sku_sale: float, sku_stock: float, repo: bool | None = None, periodo: str | None = None) -> None:
     if not code: return
-    item = bucket.setdefault((chain, str(code).strip()), {'name': name, 'banner': banner, 'sale': 0.0, 'stock': 0.0, 'skus': {}, 'repo': None})
+    item = bucket.setdefault((chain, str(code).strip()), {'name': name, 'banner': banner, 'sale': 0.0, 'stock': 0.0, 'skus': {}, 'repo': None, 'periodo': None})
     item['name'] = item['name'] or name; item['banner'] = item['banner'] or banner
+    item['periodo'] = periodo or item['periodo']
     item['sale'] += sale; item['stock'] += stock
     if repo is not None: item['repo'] = repo
     if sku:
@@ -51,37 +62,42 @@ def add(bucket: dict[tuple[str, str], dict[str, Any]], chain: str, code: str, na
 
 def cargar_cencosud(root: Path, bucket: dict[tuple[str, str], dict[str, Any]]) -> None:
     data = latest(rows(root / 'REPORTE CENCO' / 'CENCO SUCURSAL.csv'), 'PERIODO')
+    periodo = data[0].get('PERIODO', '') if data else ''
     for row in data:
         if row.get('Estado Local', '').upper() != 'ACTIVO': continue
-        add(bucket, 'Cencosud', row.get('Cód. Local', ''), row.get('Descripción Local', ''), row.get('Bandera', ''), num(row.get('Venta Q')), num(row.get('Stock Q')), row.get('EAN Principal', ''), num(row.get('Venta Q')), num(row.get('Stock Q')))
+        add(bucket, 'Cencosud', row.get('Cód. Local', ''), row.get('Descripción Local', ''), row.get('Bandera', ''), num(row.get('Venta Q')), num(row.get('Stock Q')), row.get('EAN Principal', ''), num(row.get('Venta Q')), num(row.get('Stock Q')), periodo=periodo)
 
 
 def cargar_carrefour(root: Path, bucket: dict[tuple[str, str], dict[str, Any]]) -> None:
     data = latest(rows(root / 'REPORTE CARRE' / 'BASE.csv'), 'Mes')
+    periodo = data[0].get('Mes', '') if data else ''
     for row in data:
-        add(bucket, 'Carrefour', row.get('Nro de tienda', ''), row.get('Nro. tienda - nombre de tienda', ''), row.get('Formato', ''), num(row.get('Venta mensual (uni)')), num(row.get('Stock tiendas (uni)')), row.get('Código de barras', ''), num(row.get('Venta mensual (uni)')), num(row.get('Stock tiendas (uni)')), row.get('REPO', '').strip().upper() == 'SI')
+        add(bucket, 'Carrefour', row.get('Nro de tienda', ''), row.get('Nro. tienda - nombre de tienda', ''), row.get('Formato', ''), num(row.get('Venta mensual (uni)')), num(row.get('Stock tiendas (uni)')), row.get('Código de barras', ''), num(row.get('Venta mensual (uni)')), num(row.get('Stock tiendas (uni)')), repo=row.get('REPO', '').strip().upper() == 'SI', periodo=periodo)
 
 
 def cargar_changomas(root: Path, bucket: dict[tuple[str, str], dict[str, Any]]) -> None:
     data = latest(rows(root / 'REPORTE CHANGOMAS' / 'Detalle semanal.csv'), 'Fecha (lunes)')
+    periodo = data[0].get('Fecha (lunes)', '') if data else ''
     for row in data:
         stock = num(row.get('Stock on Hand'))
-        add(bucket, 'Changomas', row.get('Tienda ID ID', ''), row.get('Tienda ID DESC', ''), row.get('Tienda ID DESC', ''), num(row.get('Venta Neta')), stock, row.get('Código SKU ID ID', ''), num(row.get('Venta Neta')), stock)
+        add(bucket, 'Changomas', row.get('Tienda ID ID', ''), row.get('Tienda ID DESC', ''), row.get('Tienda ID DESC', ''), num(row.get('Venta Neta')), stock, row.get('Código SKU ID ID', ''), num(row.get('Venta Neta')), stock, periodo=periodo)
 
 
 def cargar_dia(root: Path, bucket: dict[tuple[str, str], dict[str, Any]]) -> None:
     data = latest(rows(root / 'REPORTE DIA' / 'VENTA.csv'), 'PERIODO')
+    periodo = data[0].get('PERIODO', '') if data else ''
     for row in data:
-        add(bucket, 'DIA', row.get('SUCURSAL', ''), f"Día {row.get('Dirección', '')}", row.get('BANDERA', 'DIA'), num(row.get('UNIDADES')), 0.0, row.get('CODIGO_EAN', ''), num(row.get('UNIDADES')), 0.0)
+        add(bucket, 'DIA', row.get('SUCURSAL', ''), f"Día {row.get('Dirección', '')}", row.get('BANDERA', 'DIA'), num(row.get('UNIDADES')), 0.0, row.get('CODIGO_EAN', ''), num(row.get('UNIDADES')), 0.0, periodo=periodo)
 
 
 def cargar_laanonima(root: Path, bucket: dict[tuple[str, str], dict[str, Any]]) -> None:
     sales = latest(rows(root / 'REPORTE LA ANONIMA' / 'VENTA.csv'), 'Dia')
     stock = latest(rows(root / 'REPORTE LA ANONIMA' / 'STOCK.csv'), 'Dia')
+    periodo = sales[0].get('Dia', '') if sales else ''
     for row in sales:
-        add(bucket, 'La Anónima', row.get('Sucursal', ''), f"La Anónima {row.get('Sucursal', '')}", 'La Anónima', num(row.get('Unidades Vendidas')), 0.0, row.get('Scancode CD', ''), num(row.get('Unidades Vendidas')), 0.0)
+        add(bucket, 'La Anónima', row.get('Sucursal', ''), f"La Anónima {row.get('Sucursal', '')}", 'La Anónima', num(row.get('Unidades Vendidas')), 0.0, row.get('Scancode CD', ''), num(row.get('Unidades Vendidas')), 0.0, periodo=periodo)
     for row in stock:
-        add(bucket, 'La Anónima', row.get('Sucursal', ''), f"La Anónima {row.get('Sucursal', '')}", 'La Anónima', 0.0, num(row.get('Unidades Stock Final')), row.get('Articulo ID', ''), 0.0, num(row.get('Unidades Stock Final')))
+        add(bucket, 'La Anónima', row.get('Sucursal', ''), f"La Anónima {row.get('Sucursal', '')}", 'La Anónima', 0.0, num(row.get('Unidades Stock Final')), row.get('Articulo ID', ''), 0.0, num(row.get('Unidades Stock Final')), periodo=periodo)
 
 
 def importar(root: Path) -> tuple[int, int]:
@@ -103,10 +119,10 @@ def importar(root: Path) -> tuple[int, int]:
                     missing.append(f'{chain};{code};{item["name"]}')
                     continue
                 skus = [{'sku': sku, 'venta_semanal': round(value['sale'] / 4.345, 3), 'stock': round(value['stock'], 3), 'activo': True} for sku, value in item['skus'].items()]
-                metrics.append((key, json.dumps([item['sale']]), None, item['sale'] / 4.345, None, item['stock'], None, json.dumps(skus, ensure_ascii=False)))
+                metrics.append((key, json.dumps([item['sale']]), None, item['sale'] / 4.345, None, item['stock'], None, json.dumps(skus, ensure_ascii=False), fecha_corte(item['periodo']), item['periodo']))
                 if item['repo'] is not None: plans.append((key, item['repo'], 'REPORTE CARRE PBIX'))
             if metrics:
-                execute_values(cur, '''INSERT INTO public.cobertura_metricas_sucursal (clave_sucursal,venta_unidades_periodos,venta_pesos_periodos,venta_semanal_unidades,venta_semanal_pesos,stock_unidades,stock_pesos,skus) VALUES %s ON CONFLICT (clave_sucursal) DO UPDATE SET venta_unidades_periodos=EXCLUDED.venta_unidades_periodos,venta_pesos_periodos=EXCLUDED.venta_pesos_periodos,venta_semanal_unidades=EXCLUDED.venta_semanal_unidades,venta_semanal_pesos=EXCLUDED.venta_semanal_pesos,stock_unidades=EXCLUDED.stock_unidades,stock_pesos=EXCLUDED.stock_pesos,skus=EXCLUDED.skus,actualizado_en=now()''', metrics, page_size=250)
+                execute_values(cur, '''INSERT INTO public.cobertura_metricas_sucursal (clave_sucursal,venta_unidades_periodos,venta_pesos_periodos,venta_semanal_unidades,venta_semanal_pesos,stock_unidades,stock_pesos,skus,fecha_corte,periodo_venta) VALUES %s ON CONFLICT (clave_sucursal) DO UPDATE SET venta_unidades_periodos=EXCLUDED.venta_unidades_periodos,venta_pesos_periodos=EXCLUDED.venta_pesos_periodos,venta_semanal_unidades=EXCLUDED.venta_semanal_unidades,venta_semanal_pesos=EXCLUDED.venta_semanal_pesos,stock_unidades=EXCLUDED.stock_unidades,stock_pesos=EXCLUDED.stock_pesos,skus=EXCLUDED.skus,fecha_corte=EXCLUDED.fecha_corte,periodo_venta=EXCLUDED.periodo_venta,actualizado_en=now()''', metrics, page_size=250)
             if plans:
                 execute_values(cur, '''INSERT INTO public.cobertura_reposicion (clave_sucursal,tiene_reposicion,fuente) VALUES %s ON CONFLICT (clave_sucursal) DO UPDATE SET tiene_reposicion=EXCLUDED.tiene_reposicion,fuente=EXCLUDED.fuente,actualizado_en=now()''', plans, page_size=500)
         conn.commit()
