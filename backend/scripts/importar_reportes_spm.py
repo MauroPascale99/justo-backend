@@ -28,14 +28,19 @@ def num(value: str | None) -> float:
 
 
 def rows(path: Path):
-    if not path.is_file(): return []
+    if not path.is_file(): return
     with path.open(encoding='utf-8-sig', newline='') as file:
-        return list(csv.DictReader(file, delimiter=';'))
+        yield from csv.DictReader(file, delimiter=';')
 
 
-def latest(data: list[dict[str, str]], field: str) -> list[dict[str, str]]:
-    values = [row.get(field, '') for row in data if row.get(field)]
-    return [row for row in data if row.get(field, '') == max(values)] if values else data
+def ultimo_periodo(path: Path, field: str) -> str:
+    return max((row.get(field, '') for row in rows(path) if row.get(field)), default='')
+
+
+def rows_del_periodo(path: Path, field: str, periodo: str):
+    for row in rows(path):
+        if not periodo or row.get(field, '') == periodo:
+            yield row
 
 
 def fecha_corte(periodo: str | None) -> str | None:
@@ -61,42 +66,37 @@ def add(bucket: dict[tuple[str, str], dict[str, Any]], chain: str, code: str, na
 
 
 def cargar_cencosud(root: Path, bucket: dict[tuple[str, str], dict[str, Any]]) -> None:
-    data = latest(rows(root / 'REPORTE CENCO' / 'CENCO SUCURSAL.csv'), 'PERIODO')
-    periodo = data[0].get('PERIODO', '') if data else ''
-    for row in data:
+    path = root / 'REPORTE CENCO' / 'CENCO SUCURSAL.csv'; periodo = ultimo_periodo(path, 'PERIODO')
+    for row in rows_del_periodo(path, 'PERIODO', periodo):
         if row.get('Estado Local', '').upper() != 'ACTIVO': continue
         add(bucket, 'Cencosud', row.get('Cód. Local', ''), row.get('Descripción Local', ''), row.get('Bandera', ''), num(row.get('Venta Q')), num(row.get('Stock Q')), row.get('EAN Principal', ''), num(row.get('Venta Q')), num(row.get('Stock Q')), periodo=periodo)
 
 
 def cargar_carrefour(root: Path, bucket: dict[tuple[str, str], dict[str, Any]]) -> None:
-    data = latest(rows(root / 'REPORTE CARRE' / 'BASE.csv'), 'Mes')
-    periodo = data[0].get('Mes', '') if data else ''
-    for row in data:
+    path = root / 'REPORTE CARRE' / 'BASE.csv'; periodo = ultimo_periodo(path, 'Mes')
+    for row in rows_del_periodo(path, 'Mes', periodo):
         add(bucket, 'Carrefour', row.get('Nro de tienda', ''), row.get('Nro. tienda - nombre de tienda', ''), row.get('Formato', ''), num(row.get('Venta mensual (uni)')), num(row.get('Stock tiendas (uni)')), row.get('Código de barras', ''), num(row.get('Venta mensual (uni)')), num(row.get('Stock tiendas (uni)')), repo=row.get('REPO', '').strip().upper() == 'SI', periodo=periodo)
 
 
 def cargar_changomas(root: Path, bucket: dict[tuple[str, str], dict[str, Any]]) -> None:
-    data = latest(rows(root / 'REPORTE CHANGOMAS' / 'Detalle semanal.csv'), 'Fecha (lunes)')
-    periodo = data[0].get('Fecha (lunes)', '') if data else ''
-    for row in data:
+    path = root / 'REPORTE CHANGOMAS' / 'Detalle semanal.csv'; periodo = ultimo_periodo(path, 'Fecha (lunes)')
+    for row in rows_del_periodo(path, 'Fecha (lunes)', periodo):
         stock = num(row.get('Stock on Hand'))
         add(bucket, 'Changomas', row.get('Tienda ID ID', ''), row.get('Tienda ID DESC', ''), row.get('Tienda ID DESC', ''), num(row.get('Venta Neta')), stock, row.get('Código SKU ID ID', ''), num(row.get('Venta Neta')), stock, periodo=periodo)
 
 
 def cargar_dia(root: Path, bucket: dict[tuple[str, str], dict[str, Any]]) -> None:
-    data = latest(rows(root / 'REPORTE DIA' / 'VENTA.csv'), 'PERIODO')
-    periodo = data[0].get('PERIODO', '') if data else ''
-    for row in data:
+    path = root / 'REPORTE DIA' / 'VENTA.csv'; periodo = ultimo_periodo(path, 'PERIODO')
+    for row in rows_del_periodo(path, 'PERIODO', periodo):
         add(bucket, 'DIA', row.get('SUCURSAL', ''), f"Día {row.get('Dirección', '')}", row.get('BANDERA', 'DIA'), num(row.get('UNIDADES')), 0.0, row.get('CODIGO_EAN', ''), num(row.get('UNIDADES')), 0.0, periodo=periodo)
 
 
 def cargar_laanonima(root: Path, bucket: dict[tuple[str, str], dict[str, Any]]) -> None:
-    sales = latest(rows(root / 'REPORTE LA ANONIMA' / 'VENTA.csv'), 'Dia')
-    stock = latest(rows(root / 'REPORTE LA ANONIMA' / 'STOCK.csv'), 'Dia')
-    periodo = sales[0].get('Dia', '') if sales else ''
-    for row in sales:
+    path_sales = root / 'REPORTE LA ANONIMA' / 'VENTA.csv'; path_stock = root / 'REPORTE LA ANONIMA' / 'STOCK.csv'; periodo = ultimo_periodo(path_sales, 'Dia')
+    for row in rows_del_periodo(path_sales, 'Dia', periodo):
         add(bucket, 'La Anónima', row.get('Sucursal', ''), f"La Anónima {row.get('Sucursal', '')}", 'La Anónima', num(row.get('Unidades Vendidas')), 0.0, row.get('Scancode CD', ''), num(row.get('Unidades Vendidas')), 0.0, periodo=periodo)
-    for row in stock:
+    periodo_stock = ultimo_periodo(path_stock, 'Dia')
+    for row in rows_del_periodo(path_stock, 'Dia', periodo_stock):
         add(bucket, 'La Anónima', row.get('Sucursal', ''), f"La Anónima {row.get('Sucursal', '')}", 'La Anónima', 0.0, num(row.get('Unidades Stock Final')), row.get('Articulo ID', ''), 0.0, num(row.get('Unidades Stock Final')), periodo=periodo)
 
 
